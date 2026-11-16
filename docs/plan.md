@@ -1,28 +1,28 @@
 # Implementation plan: from `/design` prototype to the real site
 
-Status: **plan for review, revision 2 (after an adversarial review). No production code yet.** Luke approves this plan before implementation starts.
+Status: **plan for final approval, revision 3. Luke's decisions D1–D6 are applied. No production code yet.** Luke gives the final approval before any implementation starts, including the small pre-merge commit for M0.
 
 Inputs:
 - `docs/design.md`: the approved direction 「藍上的光」
 - `resume_v3_zh.md`: the only source of facts
 - The `/design` prototype on this branch
 
-What changed since revision 1, and what was considered but rejected, is listed in **section 14, Review changelog**. Numbers marked *measured* come from real runs on this branch, not estimates.
+What changed in each revision, and what was considered but rejected, is listed in **section 14, Review changelog**. Everything Luke has to do himself is collected in **§13.2**. Numbers marked *measured* come from real runs on this branch, not estimates.
 
 ---
 
-## 0. Decisions for Luke, and defaults (all changeable)
+## 0. Decisions and defaults
 
-### 0.1 Decisions that need Luke's answer before or during implementation
+### 0.1 Luke's decisions (answered 2026-11-16)
 
-| # | Decision | Recommendation (used as the default if Luke doesn't answer) |
-| --- | --- | --- |
-| D1 | **Contact email.** The local part `t0921988961` looks like a Taiwanese mobile number, so publishing it on a public, indexed site also publishes the phone number to scrapers. (Taiwan has heavy scam-call activity.) | Before launch, create a dedicated address such as `luke.cheng.dev@gmail.com` for the site. Until Luke decides, the current address stays. Changing it later is a one-line change in `lib/site.ts`. |
-| D2 | **Custom domain.** `luke-look.vercel.app` looks like a hobby project to a hiring manager, and moving domains after launch means redoing Search Console, UTM links, LinkedIn's cached previews and GA settings. | Buy a domain **before launch** (for example `lukecheng.dev` or a `.tw` domain, about USD 10–40 a year) and keep `luke-look.vercel.app` as a 308 redirect. If Luke skips this, launch on vercel.app; the plan supports switching later (§10.3). |
-| D3 | **Japanese and Korean.** The ja and ko text is machine-quality, not native-reviewed; for example 「足輪監視システム」 for 腳鐐監控 reads wrong in Japanese. A visibly unnatural ja/ko page hurts credibility more than having no ja/ko page. These pages could also suggest Luke speaks Japanese or Korean. | Ship ja and ko with a visible translation note (§3.2) and `noindex`, left out of the sitemap and hreflang, until a native speaker has reviewed them. English gets the same note and is proofread before launch. |
-| D4 | **Ship the approved design now as an interim site?** Production currently shows the starter page with 「Auto-deploy test」. | Yes. Merge PR #1 once this plan is approved (§12, milestone M0). The prototype looks far better than the starter page, and every later step becomes a small PR that can be reverted. Alternative: keep production on the starter page until a single launch PR. |
-| D5 | **Consent banner for EU visitors.** | No banner. GA uses Consent Mode v2 with storage *denied by default* in the EEA, UK and Switzerland, plus a short privacy notice (§9.4). Add a banner only if Luke expects meaningful EU traffic. |
-| D6 | **VRT matrix size.** | 17 snapshots instead of 40 (§11.3). The full 4 locales × 3 widths × 2 themes matrix stays available as an opt-in run. |
+| # | Decision | Outcome | Where it is applied |
+| --- | --- | --- | --- |
+| D1 | Contact email | **Keep `t0921988961@gmail.com`**, with a protection layer: the plain address never appears in static HTML, JSON-LD, the sitemap, OG images or the JS bundle. It is assembled in the browser only after a click, and LinkedIn and CakeResume stay the primary contact options. | §10.6, §10.7, §13.3 |
+| D2 | Custom domain | **None for now.** Stay on `luke-look.vercel.app`. Every absolute URL comes from `NEXT_PUBLIC_SITE_URL`, so switching later follows the checklist in §10.3. | §10.3 |
+| D3 | ja and ko review | **No native reviewers yet.** ja and ko ship with the translation note, `noindex`, and are left out of the sitemap and hreflang until reviewed. | §3.2, §4 |
+| D4 | Interim site | **Yes, merge PR #1 first** after final plan approval, after one small pre-merge hardening commit. | §12 (M0) |
+| D5 | Consent banner | **Yes.** A non-blocking banner in 4 languages with Consent Mode v2: GA is denied by default everywhere and granted only after "Accept". The choice is remembered and can be changed from the footer. | §9.4 |
+| D6 | VRT matrix | **17 snapshots on every PR. The full matrix (38 snapshots: 4 locales × 3 widths × 2 themes, plus states) runs only when triggered by hand (`workflow_dispatch`)** before major redesigns and before launch. | §11.3 |
 
 ### 0.2 Content defaults from Luke's open questions (unchanged)
 
@@ -34,6 +34,8 @@ What changed since revision 1, and what was considered but rejected, is listed i
 | 4 | Résumé PDF | No download yet. A slot shows a button in Contact and the mobile menu only when `site.resume[locale]` is set; the `resume_download` event is already wired. |
 | 5 | Language detection | No automatic redirect from `Accept-Language`. The URL decides the language, and an explicit choice (cookie) is honored on `/`. |
 | 6 | `/design` | Removed at the end of M2 (§7). |
+| 7 | Contact order | LinkedIn and CakeResume are the two primary buttons. Email is a secondary 「顯示 Email」 button. |
+| 8 | Address shown after reveal | `t0921988961+portfolio@gmail.com`. It reaches the same inbox, lets Gmail label mail sent from the site, and shows whether spam came from the site. It is a one-line change back to the plain address (§10.6). |
 
 Content rules still apply everywhere (conservative wording, no invented numbers, no GitHub link) and are enforced by tests (§11.1).
 
@@ -51,7 +53,7 @@ Lighthouse 12, mobile preset, on `next start`. JavaScript sizes come from the bu
 | CSS | about 380 KB gzip (three CJK `@font-face` files of 100–150 KB each, render-blocking) | ≤ 25 KB gzip |
 | Fonts | 1.1 MB (18 files) | ≤ 300 KB per locale |
 | JavaScript | about 265 KB gzip; GSAP, ScrollTrigger, MorphSVG, DrawSVG and Lenis are about 64 KB of it | see §5.3 |
-| Google `gtag.js` (not loaded yet) | about 548 KB raw, about 180 KB compressed (*measured* for `G-G5PL64KQG6`) | loaded late (§9.1) |
+| Google `gtag.js` (not loaded yet) | about 548 KB raw, about 180 KB compressed (*measured* for `G-G5PL64KQG6`) | loaded only after consent, with `lazyOnload` (§9.1) |
 
 Root causes:
 1. **Fonts.** All CJK families load in 4 weights on every page.
@@ -104,16 +106,18 @@ app/
 lib/
   i18n/config.ts  i18n/dictionaries/{zh-TW,en,ja,ko}.ts  i18n/get-dictionary.ts
   site.ts  analytics.ts  metadata.ts  consent.ts
+  contact.ts            encoded email parts; client-only, never imported by Server Components (§10.6)
 components/
   shell/      RootShell (fonts, boot script, GA, Vercel Analytics, JSON-LD), HomePage
   sections/   Hero About Experience Work Approach Skills Contact Footer   (Server Components)
   islands/    SiteHeader ThemeSwitch LanguageSwitch MotionToggle MobileMenu ExperienceList
-              CopyEmailButton DashboardMock ApproachStage HeroCanvas     (Client Components)
+              EmailReveal ConsentBanner CookieSettingsLink
+              DashboardMock ApproachStage HeroCanvas                     (Client Components)
   motion/     MotionRoot (Lenis + GSAP reveals, lazy), useMotionPreference
   ui/         Icons LogoMark SplitWords SectionHead
 assets/fonts/ generated WOFF2 subsets + OFL.txt
 public/og/    zh-TW.png en.png ja.png ko.png
-scripts/      subset-fonts.mjs  generate-og.mjs  generate-icons.mjs
+scripts/      subset-fonts.mjs  generate-og.mjs  generate-icons.mjs  check-no-email.mjs
 tests/        unit/  e2e/  vrt/
 ```
 
@@ -133,7 +137,7 @@ tests/        unit/  e2e/  vrt/
 - Typed per-locale modules (`satisfies Dict`), plus a structure-parity unit test.
 - The prototype's typography rules carry over (`line-break: strict` for zh/ja, `keep-all` for ko, per-locale hero sizes).
 
-### 3.2 Translation honesty and quality (new)
+### 3.2 Translation honesty and quality (D3: no native reviewers yet)
 
 - Every non-zh page shows a small note under the language section and in the footer: *"This page is translated from the Chinese original. Luke works in Mandarin and reads English technical and API documentation."* It is adapted for ja/ko. This keeps the site consistent with the résumé's conservative language claim.
 - **Review gate**, tracked in `docs/content-review.md` as a checklist with reviewer names:
@@ -161,13 +165,14 @@ tests/        unit/  e2e/  vrt/
 - **`sitemap.ts` and `robots.ts`:**
   - The sitemap includes only the indexable locales.
   - `robots.ts` disallows everything when `VERCEL_ENV !== "production"`.
-- **JSON-LD `Person`**, factual only: name, alternate name 鄭宏璋, job title, Taipei, `sameAs` LinkedIn and CakeResume. No email and no GitHub.
+- **JSON-LD `Person`**, factual only: name, alternate name 鄭宏璋, job title, Taipei, `sameAs` LinkedIn and CakeResume. **No `email` property** (D1) and no GitHub.
+- **robots.txt** also carries the AI-crawler rules from §10.7.
 - **OG images are static PNGs** in `public/og/{locale}.png` (1200×630), referenced from metadata.
   - `scripts/generate-og.mjs` renders an HTML template with the real fonts and a static horizon frame using Playwright, so the image matches the site exactly. The images are regenerated only when the tagline or name changes.
   - This replaces runtime `next/og`: Satori cannot use WOFF2 and needs CJK font files embedded, which was extra complexity for 4 images.
 - **Search Console:**
-  - On vercel.app, use a URL-prefix property verified with an HTML meta tag (`metadata.verification.google` from the env var `GOOGLE_SITE_VERIFICATION`).
-  - On a custom domain, use a Domain property verified by DNS TXT.
+  - Use a URL-prefix property for `https://luke-look.vercel.app/` (D2), verified with an HTML meta tag (`metadata.verification.google` from the env var `GOOGLE_SITE_VERIFICATION`). A Domain property is not possible on `vercel.app`.
+  - If a custom domain is added later, use a Domain property verified by DNS TXT.
   - Submit the sitemap. Bing Webmaster Tools can import from Search Console.
 - **After launch:** LinkedIn Post Inspector (it caches OG data), Rich Results Test, and Search Console's hreflang and coverage reports.
 
@@ -218,7 +223,8 @@ tests/        unit/  e2e/  vrt/
 | Fonts per locale | ≤ 300 KB including Latin | sum of subset files + Latin | yes |
 | Lighthouse (CI, local build, GA off) | a11y ≥ 0.95, SEO = 1, best practices ≥ 0.95, CLS ≤ 0.05 | LHCI | yes |
 | Lighthouse performance (CI) | ≥ 0.85 | LHCI | **no (warning)**: runner noise makes it flaky |
-| Production PageSpeed Insights (with GA) | performance ≥ 90, LCP ≤ 2.5 s, TBT ≤ 200 ms | manual check after each deploy | — |
+| Production PageSpeed Insights (first visit: consent banner, no GA) | performance ≥ 90, LCP ≤ 2.5 s, TBT ≤ 200 ms | manual check after each deploy | — |
+| Production after Accept (GA loaded with `lazyOnload`) | TBT ≤ 200 ms | manual Lighthouse in Chrome DevTools with consent stored | — |
 | Field data | INP ≤ 200 ms, LCP ≤ 2.5 s | Vercel Speed Insights (optional, §9.5) or Search Console Core Web Vitals | — |
 
 ---
@@ -238,15 +244,26 @@ tests/        unit/  e2e/  vrt/
 - **Experience rows:**
   - Every row shows company, role, dates and a one-line summary **without expanding**. Hiring managers scan, they don't click.
   - Each row's first bullet is also visible; "more" reveals the rest.
+- **Consent banner (§9.4):**
+  - It is a labelled region (`role="region"`, `aria-labelledby`), **not a modal**: no focus trap, no backdrop, no scroll lock, and it never takes focus on load.
+  - It sits in the DOM right after the skip link, so keyboard and screen-reader users reach it early.
+  - 「接受」 and 「拒絕」 are equal in size and emphasis.
+  - Under reduced motion it appears without animation.
+- **Email reveal (§10.6):** a real `<button>` with `aria-expanded` and `aria-controls`. The revealed address is announced through a polite live region, and focus moves to the new 「複製」 button.
 - **Checking:** axe (§11.4), plus one manual pass each with keyboard only, VoiceOver (zh-TW and en) and NVDA.
 
 ---
 
 ## 7. Cleanup: starter content and `/design`
 
-- **M0** (merging PR #1) already removes the starter page and the 「Auto-deploy test」 line from production, because `/` renders the approved design.
+- **M0** (merging PR #1, D4) removes the starter page and the 「Auto-deploy test」 line from production, because `/` renders the approved design. One **small pre-merge hardening commit** on PR #1 is made first, after final approval:
+  1. The prototype's plain email (in `LINKS.email`, the contact section and `mailto:`) is replaced with the click-to-reveal button (§10.6), so the address never reaches production HTML.
+  2. Remove 「設計提案 v1 · 僅供審閱」 from the footer.
+  3. Add `robots: noindex` to `/design`.
+  4. Fix the 1–3 px horizontal overflow (`overflow-x: clip` on the skills section).
+
+  The interim site loads no analytics, so it needs no consent banner yet.
 - **M2** deletes `/design` and `components/design/` once the sections are ported. Until then, `/design` gets `robots: noindex`.
-- Remove `contact.note` (「設計提案 v1」) in M1.
 - Replace `README.md` with a short README: scripts, the text-change runbook (§13), and how VRT updates work.
 - `AGENTS.md` (generated by `next dev`) is committed on purpose, so agents get the Next 16 doc pointer.
 
@@ -261,25 +278,29 @@ tests/        unit/  e2e/  vrt/
 
 ## 9. Analytics and privacy
 
-### 9.1 GA4 loading (`G-G5PL64KQG6`, production only)
+### 9.1 GA4 loading (`G-G5PL64KQG6`, production only, after consent)
 
-- Use `next/script` with **`strategy="lazyOnload"`**, which loads after `window.load` and idle time.
-  - `gtag.js` is about 180 KB compressed (*measured*), about as large as the whole site's JS. Loading it after hydration (the default for `@next/third-parties`) would put it in the middle of the mobile TBT/INP window.
-  - Trade-off: a visitor who leaves within about 1–2 s may not be counted. That is acceptable for a portfolio.
-- It is rendered only when `VERCEL_ENV === "production"`, **and the visitor has not opted out** (§9.3).
-- GA settings:
-  - Google signals: off. Ads personalization: off. Data retention: 14 months.
-  - IP addresses are not logged in GA4 by design.
+- **Basic Consent Mode:** `gtag.js` is **not downloaded at all until the visitor clicks 「接受」** (D5). Before that, no request goes to Google, so there is nothing to gate later and nothing to clean up.
+- Once accepted, GA is loaded with `next/script` **`strategy="lazyOnload"`** on every later page view.
+  - `gtag.js` is about 180 KB compressed (*measured*), about as large as the whole site's JS, so it must stay out of the mobile TBT/INP window.
+  - A visitor who never accepts is never counted in GA. Vercel Web Analytics still counts them anonymously (§9.5).
+- GA is rendered only when **all** of these are true:
+  - `VERCEL_ENV === "production"`
+  - consent is granted
+  - the device has not opted out (§9.3)
+- GA settings: Google signals off, ads personalization off, data retention 14 months. GA4 does not log IP addresses.
 - `track(name, params)` in `lib/analytics.ts`:
-  - It defines the standard `gtag` shim (`window.dataLayer.push(arguments)`), so events fired before `gtag.js` arrives are queued and then sent rather than dropped. gtag only processes `arguments` objects, not arrays, and the shim handles that.
-  - It does nothing when analytics is disabled.
-  - Revision 1's `transport_type: "beacon"` is removed; GA4 already uses `sendBeacon` by default.
+  - It defines the standard `gtag` shim (`window.dataLayer.push(arguments)`). gtag only processes `arguments` objects, not arrays.
+  - Events fired **before consent are dropped, not queued**, so nothing from before "Accept" is sent later.
+  - Events after consent but before `gtag.js` finishes loading are queued in `dataLayer` and sent when it arrives.
+  - It does nothing in non-production builds or on opted-out devices.
 
 ### 9.2 Events
 
 | Event | When | Parameters |
 | --- | --- | --- |
-| `contact_click` (mark as a **key event**) | LinkedIn, CakeResume or email link clicked | `method`, `location` (`hero` / `nav` / `menu` / `contact`) |
+| `contact_click` (mark as a **key event**) | LinkedIn, CakeResume, or the `mailto:` link shown after reveal, clicked | `method`, `location` (`hero` / `nav` / `menu` / `contact`) |
+| `reveal_email` | 「顯示 Email」 clicked | `location` |
 | `copy_email` | The copy button succeeds | `location` |
 | `select_language` | The user picks a language | `from`, `to` |
 | `select_theme` | The user picks a theme | `preference`, `resolved` |
@@ -288,28 +309,63 @@ tests/        unit/  e2e/  vrt/
 
 - Register `method`, `location`, `from`, `to`, `preference` and `state` as event-scoped custom dimensions in GA Admin.
 - Enhanced Measurement's automatic outbound clicks stay on. The custom event adds labels and also covers `mailto:`.
+- Consent choices are **not** sent to GA as events: a rejection must not be tracked. Accepted versus rejected counts are not needed.
 
 ### 9.3 Luke's own visits (internal traffic)
 
-- Opening `https://<site>/?notrack=1` once on each of Luke's devices sets `localStorage.notrack = "1"`. After that, neither GA nor Vercel Analytics loads or sends anything on that device. `?notrack=0` turns tracking back on.
+- Opening `https://luke-look.vercel.app/?notrack=1` once on each of Luke's devices sets `localStorage.notrack = "1"`. After that, neither GA nor Vercel Analytics loads or sends anything on that device, and the consent banner stays hidden. `?notrack=0` turns tracking back on.
 - This is more reliable than GA's IP-based internal-traffic filter, because Taiwanese home and mobile IP addresses change.
 - A small 「不追蹤中」 dot in the footer, visible only on opted-out devices, makes the state obvious.
 
-### 9.4 Privacy and consent
+### 9.4 Consent banner and privacy (D5)
 
-This is not legal advice; it is a proportionate setup for a personal portfolio.
+This is not legal advice; it is a proportionate, standard setup for a personal portfolio.
 
-- **Consent Mode v2 defaults:**
-  - For the EEA, UK and CH (the `region` list): `analytics_storage`, `ad_storage`, `ad_user_data` and `ad_personalization` are all **denied**. GA then sends cookieless pings only.
-  - Everywhere else, `analytics_storage` is granted and all ad signals are denied.
-  - This covers GDPR cookie rules without a banner (D5). Japan (APPI and the 2023 external-transmission rule) and Korea (PIPA) are covered by the notice below, since no data is sold or used for ads.
-- **Privacy notice:** a footer disclosure 「隱私 / Privacy」 in all four languages. It covers what is collected (anonymous usage statistics through Google Analytics 4 and Vercel Web Analytics), that no ads are used, the Google opt-out browser add-on, and the `?notrack=1` switch.
+**Consent Mode v2 states**
+
+| Signal | Before a choice | After 「接受」 | After 「拒絕」 |
+| --- | --- | --- | --- |
+| `analytics_storage` | denied | **granted** | denied |
+| `ad_storage`, `ad_user_data`, `ad_personalization` | denied | denied (always) | denied |
+| `gtag.js` downloaded? | no | yes (`lazyOnload`) | no |
+
+- `gtag('consent', 'default', …)` with every signal denied is pushed before any `config` call, then `gtag('consent', 'update', { analytics_storage: 'granted' })` on accept. Ads signals are never granted; the site has no ads.
+- The banner is shown **in every region**. A static site cannot tell where a visitor is without a server, and one consistent behavior is simpler to test.
+
+**Banner design** (matches 「藍上的光」, using the nav's glass surface):
+
+- **Layout:**
+  - Desktop: a compact card at bottom-left, max 420 px wide.
+  - Mobile: a bottom sheet no taller than 30% of the viewport, so it never covers the hero CTA.
+  - `position: fixed`, so there is **no layout shift**. The text is small, so it cannot become the LCP element.
+- **Text** (zh; en, ja and ko in the dictionaries): 「本站使用 Google Analytics 了解瀏覽情況（不含廣告）。你可以接受或拒絕，之後也能在頁尾「Cookie 設定」變更。」
+- **Controls:**
+  - Buttons 「接受」 and 「拒絕」 with equal weight, and a link 「隱私說明」 that opens the footer disclosure.
+  - There is no "×". Closing without a choice would be ambiguous, so the visitor picks one of the two.
+- **Behavior:**
+  - Not blocking: the page scrolls and every link works while the banner is visible.
+  - It appears after hydration, with a short fade that is skipped under reduced motion. Accessibility details are in §6.
+- **Remembered choice:**
+  - Stored in `localStorage["consent.v1"] = { analytics: "granted" | "denied", ts }`.
+  - The visitor is asked again after 12 months, or if the policy version (`v1`) changes.
+  - No cookie is needed to remember the choice.
+- **Changing it:**
+  - A 「Cookie 設定」 link in the footer (all 4 languages) reopens the banner, with focus on its heading.
+  - Switching from accepted to rejected sends `consent update` denied, deletes the `_ga` and `_ga_<id>` cookies, and stops sending. No reload is needed.
+
+**Privacy notice:** a footer disclosure 「隱私 / Privacy」 in all four languages. It covers:
+- what is collected: Google Analytics 4 only after consent, plus cookieless Vercel Web Analytics
+- that there are no ads and no data is sold
+- how to change the choice
+- the Google opt-out browser add-on
+- the `?notrack=1` switch
+- that the email address is shown only on request (§10.6)
 
 ### 9.5 Ad blockers and a second source of numbers
 
 - Many engineers, and some corporate networks, block GA, so GA **undercounts**. Use it for relative trends, UTM attribution and events, not absolute visitor counts.
 - **Vercel Web Analytics** (`@vercel/analytics`) is a complement:
-  - Cookieless, about 1 KB, served from the site's own domain, so it is blocked less often.
+  - Cookieless and stores nothing on the device, so it is not gated by the banner (this is disclosed in the privacy notice). About 1 KB, served from the site's own domain, so it is blocked less often. If Luke wants it gated too, it is one condition in `RootShell`.
   - Included free on the Hobby plan up to its monthly event limit; check the dashboard.
   - It gives visitor and page counts. Custom events need a paid plan, so events stay in GA.
 - **Speed Insights** (field Core Web Vitals) is optional. Enable it only if the Hobby quota fits.
@@ -328,14 +384,14 @@ This is not legal advice; it is a proportionate setup for a personal portfolio.
 
 ### 9.7 Checking that events arrive
 
-1. After deploying, open the site through **Tag Assistant** (tagassistant.google.com). It turns on debug mode automatically, so events appear in **GA → Admin → DebugView** without code changes.
+1. After deploying, open the site through **Tag Assistant** (tagassistant.google.com) and click 「接受」 on the banner (nothing loads before that). Tag Assistant turns on debug mode, so events appear in **GA → Admin → DebugView** without code changes. Its *Consent* tab shows the default and updated states.
 2. Click each contact link, switch language, theme and motion, and confirm each event and its parameters in DebugView.
 3. Do this **before** setting `?notrack=1` on that device, or temporarily use `?notrack=0`.
 4. Check **Realtime** for a UTM visit from a phone using mobile data.
 
 ---
 
-## 10. Vercel, security and operations
+## 10. Vercel, security, contact protection and operations
 
 ### 10.1 Deployments
 
@@ -356,7 +412,9 @@ This is not legal advice; it is a proportionate setup for a personal portfolio.
 - **Why `'unsafe-inline'` for scripts:** a nonce-based CSP forces every page to render dynamically on each request, and a hash-based CSP cannot cover Next's inline RSC payload scripts. The site has no user input, no login and no third-party HTML, so the remaining XSS risk is negligible.
 - E2E fails on any console CSP violation, which catches GA or Vercel Analytics being blocked by mistake.
 
-### 10.3 Custom domain (whenever D2 happens)
+### 10.3 Custom domain (D2: not now; this checklist is for later)
+
+The launch stays on `luke-look.vercel.app`. Nothing in the code hard-codes the host, so switching later is configuration only:
 
 1. Add the domain in Vercel and set it as primary, with `luke-look.vercel.app` → 308 to it.
 2. Update `NEXT_PUBLIC_SITE_URL`.
@@ -377,14 +435,75 @@ This is not legal advice; it is a proportionate setup for a personal portfolio.
 - Playwright is **excluded** from Dependabot: a Playwright upgrade changes Chromium rendering, so every baseline has to be regenerated. Bump it deliberately, about twice a year, together with its Docker image tag and a baseline refresh.
 - GSAP uses its no-charge license (free for commercial use since 3.13), Lenis is MIT, and the fonts are OFL. No paid dependencies.
 
+### 10.6 Contact and email protection (D1)
+
+**Goal:** keep `t0921988961@gmail.com` (D1) but stop the site from becoming a *new* easy source of it for scrapers, AI crawlers and spam lists, while staying one click away for real people. LinkedIn and CakeResume stay the primary contact options.
+
+**Where the address must never appear** (enforced by `scripts/check-no-email.mjs`, §11.1):
+- static HTML, RSC payloads (the inline `self.__next_f` scripts), and plain text inside JS chunks
+- JSON-LD, `sitemap.xml`, `robots.txt`, OG images and their alt text, metadata and `manifest`
+- `public/`, and the README of the live site
+- The script fails the build if it finds `t0921988961@`, `t0921988961+portfolio@`, `t0921988961%40` or `@gmail.com` in any build output, or `mailto:` in HTML or RSC output. JS chunks may contain the `mailto:` prefix itself, because the island builds the link on click.
+- The username `t0921988961` alone (as in the CakeResume URL) is allowed; it is already public.
+
+**How it works (client-side assembly):**
+1. The Contact section renders **LinkedIn** and **CakeResume** as the two primary buttons, plus a secondary **「顯示 Email」** button. Hero, nav and the mobile menu link to `#contact`, not to `mailto:`.
+2. `lib/contact.ts` is imported only by the `EmailReveal` client island, never by a Server Component, so nothing is serialized into the RSC payload.
+   - It holds the address as **encoded parts**: the local part is stored reversed and split into chunks, the domain as character codes shifted by a small constant.
+   - This is obfuscation, not encryption. It defeats regular-expression harvesters that scan HTML and JS for `something@domain`, which is what most bulk scrapers do.
+3. On click, the island assembles the address in memory and shows it as text, together with two new controls:
+   - **「複製」**, using `navigator.clipboard`. If that is unavailable, it falls back to selecting the text.
+   - **「寄信」**, an `<a href="mailto:…">` **created only at this moment**.
+4. Without JavaScript, a `<noscript>` line says 「請透過 LinkedIn 或 CakeResume 與我聯絡」.
+5. GA (after consent) records `reveal_email`, `copy_email` and `contact_click` (method `email`).
+
+**Address shown:** `t0921988961+portfolio@gmail.com` by default.
+- Gmail delivers it to the normal inbox, and a filter can label it.
+- If spam arrives addressed to `+portfolio`, Luke knows it was harvested from the site.
+- Downside: a sophisticated spammer can strip `+portfolio`, and a few rare web forms reject `+` addresses. Neither matters for a `mailto:` link.
+
+**Contact form: an option for later, not at launch.** The simplest robust version, if Luke ever wants one:
+- **Stack:** a Next.js Route Handler `POST /api/contact`, which is the site's only dynamic route.
+- **Bot defense, in this order:**
+  - A **honeypot field**, hidden and `tabindex=-1`.
+  - **Minimum fill time**, rejecting submissions faster than 3 s.
+  - **Vercel BotID Basic**, an invisible check, free on all plans, verified with `checkBotId()` on the server.
+  - A **Vercel WAF rate-limit rule** on `/api/contact`, for example 5 requests per 10 minutes per IP (check which plan offers it); otherwise a simple in-function limiter.
+  - Server-side length and URL-count validation.
+- **Delivery:** **Resend free tier** (3,000 emails a month, max 100 a day) sends the message to Luke's Gmail. Without a verified domain, Resend only sends to the account owner's own address, which is exactly this use case. The visitor's address goes in `reply_to`.
+- **Why not Formspree free or Cloudflare Turnstile:**
+  - Formspree adds a third party that receives visitor data. Its free tier is small, and its spam protection relies on reCAPTCHA, which brings consent and privacy implications.
+  - Turnstile needs a Cloudflare account and a third-party script, while BotID is native on Vercel.
+- **Why not at launch:**
+  - A form is a new spam target, a dynamic endpoint, a secret (`RESEND_API_KEY`), and more tests.
+  - Hiring managers in Taiwan normally reach out through LinkedIn, CakeResume or email anyway.
+  - The reveal button already removes the address from scrapers' reach.
+
+**What cannot be fully prevented**, stated plainly:
+- The address is **already public elsewhere**: the résumé PDFs Luke has sent, CakeResume or LinkedIn contact info (depending on visibility settings), data-broker lists, and the `t0921988961` username itself. The site can only avoid being a *new* source.
+- A headless browser or an AI agent that clicks buttons can reveal it, and a person can copy it by hand. The reveal is a speed bump, not a lock. BotID cannot protect a static button, only a server request.
+- `robots.txt` (§10.7) is voluntary. Bots with fake user agents ignore it and may not be caught by the firewall.
+- Phishing and fake-recruiter scams using Luke's public name or LinkedIn cannot be stopped by the site at all. The defense is inbox hygiene (§13.3).
+
+### 10.7 AI crawlers and bots
+
+- **`robots.txt`:**
+  - **Block AI *training* crawlers**: `GPTBot`, `ClaudeBot`, `CCBot`, `Google-Extended`, `Applebot-Extended`, `Bytespider`, `meta-externalagent`.
+  - **Allow** search engines and AI *search and assistant* agents (`OAI-SearchBot`, `ChatGPT-User`, `Claude-SearchBot`, `Claude-User`, `PerplexityBot`, `Perplexity-User`). Recruiters increasingly ask AI assistants "find a Vue engineer in Taipei", and since the email is not in the HTML, letting them read the page carries little risk.
+- **Vercel Firewall → AI Bots Managed Ruleset** (available on all plans; Luke sets it once in the dashboard):
+  - **AI Crawlers: Deny.** Enforced, not voluntary.
+  - **AI Assistants: Allow.**
+  - Optionally set **Bot Protection: Log** first, and move it to Challenge only if logs show abuse.
+- **Not adopted:** `ai.txt` and `<meta name="robots" content="noai, noimageai">`. They are not standards and the major crawlers don't honor them, so they would only add noise.
+
 ---
 
 ## 11. Testing strategy
 
-Four CI jobs. Three of them block merges.
+Three required CI jobs on every PR, plus two workflows that are only triggered by hand (`update-vrt.yml` and `vrt-full.yml`).
 
 ```
-quality (Vitest + lint + types + budgets)   browser (Playwright E2E + axe + VRT)   lighthouse (LHCI)
+quality (Vitest + lint + types + budgets + no-email guard)   browser (Playwright E2E + axe + VRT Tier 1)   lighthouse (LHCI)
 ```
 
 ### 11.1 Unit and component tests: Vitest + Testing Library
@@ -396,19 +515,22 @@ quality (Vitest + lint + types + budgets)   browser (Playwright E2E + axe + VRT)
 | --- | --- |
 | `lib/i18n`, `lib/metadata` | locale paths; canonical and alternates contain only indexable locales; `x-default` → `/en`; noindex for unreviewed locales |
 | `sitemap.ts`, `robots.ts` | only indexable locales; non-production disallows everything |
-| `lib/analytics` | the `gtag` shim pushes `arguments`; nothing happens when disabled or opted out; event names and parameters |
-| `lib/consent` | the region list and default states |
+| `lib/analytics` | the `gtag` shim pushes `arguments`; nothing is sent when disabled, opted out, or **before consent** (events are dropped, not queued); event names and parameters |
+| `lib/consent` | default denied; accept and reject transitions; stored shape `consent.v1`; re-asks after 12 months or on a version change; switching to rejected deletes the `_ga*` cookies; ads signals never granted |
+| `lib/contact` | the encoded parts decode to the configured address; the module is never imported by a Server Component (lint rule plus test) |
 | `tokenize()` | CJK punctuation, Latin runs, Korean spacing |
 | Theme store | `resolveTheme()`, saving and reading the preference |
-| `ThemeSwitch`, `LanguageSwitch`, `MotionToggle`, `MobileMenu`, `ExperienceList`, `CopyEmailButton` | ARIA attributes, keyboard support, events fired, failures handled quietly |
+| `ThemeSwitch`, `LanguageSwitch`, `MotionToggle`, `MobileMenu`, `ExperienceList`, `EmailReveal`, `ConsentBanner` | ARIA attributes, keyboard support, events fired, failures handled quietly; `EmailReveal` renders no address and no `mailto:` before the click; `ConsentBanner` has equal-weight buttons and no focus trap |
 | **Content guards** | all four locales have the same structure; no `github` anywhere; **number allowlist** taken from the résumé; subscription numbers only appear with the 「產品規模 / 平台訂閱數」 wording; contact links are exact; `contact.note` is gone |
 | **Font coverage** | every character in each dictionary exists in that locale's subset |
 | **Budgets** | the build-output size script (§5.3), run after `next build` in the `quality` job |
+| **No plain email** | `scripts/check-no-email.mjs` scans `.next` output (HTML, RSC, JS chunks), `public/`, the generated sitemap and robots, and the OG metadata for the patterns in §10.6. It runs after `next build` in the `quality` job and blocks the merge. |
 
 ### 11.2 End-to-end tests: Playwright
 
 - **Projects:** `chromium-desktop` (1440×900) and `webkit-mobile` (375×812, touch). Revision 1's Firefox and tablet E2E projects are dropped: they add CI time without covering a distinct risk, and 768 is still covered by VRT.
-- **Builds:** CI builds **once** with `ANALYTICS_FORCE=1`, so GA is rendered, and every Google domain is blocked by `page.route`, so no data is ever sent. Every spec therefore exercises the real analytics code path.
+- **Builds:** CI builds **once** with `ANALYTICS_FORCE=1`, which treats the build as production for analytics; consent is still required. Every Google domain is blocked by `page.route`, so no data is ever sent, but the request attempts can still be observed. Every spec exercises the real consent and analytics code.
+- **Default state:** an init script stores a choice (`consent.v1` = denied) so the banner doesn't cover other tests. The `consent` spec starts from an empty `localStorage`.
 - **Global checks in every spec:** no console errors, no CSP violations, and **no horizontal overflow** (`scrollWidth ≤ innerWidth`).
 
 | Spec | Scenarios |
@@ -416,10 +538,12 @@ quality (Vitest + lint + types + budgets)   browser (Playwright E2E + axe + VRT)
 | `theme` | follows the OS by default; choosing a theme survives reload; System follows a live `emulateMedia` change; **no flash**: `data-theme` is already correct at `DOMContentLoaded` |
 | `i18n` | each URL has the correct `lang`, `h1` and nav; the switcher moves between `/`, `/en`, `/ja` and `/ko` and keeps the hash; after choosing English, a fresh visit to `/` redirects to `/en` with UTM parameters kept; an unknown path returns 404 through `global-not-found`; ja and ko have `noindex` while unreviewed |
 | `menu` (webkit-mobile) | focus trap, Esc, links close the menu, page scroll is locked |
-| `analytics` | `window.dataLayer` receives `contact_click` (LinkedIn, CakeResume, email), `copy_email`, `select_language`, `select_theme` and `toggle_motion` with the right parameters; `?notrack=1` stops GA from loading and is remembered; Consent Mode defaults are pushed before `config` |
-| `seo` | canonical, hreflang (indexable locales plus `x-default` → `/en`), OG tags and image URLs, JSON-LD without email or GitHub; sitemap and robots content; icons |
+| `consent` | **First visit:** the banner is visible in the page's language and doesn't cover the hero CTA at 375 (bounding-box check); the page scrolls and links work underneath; consent `default` is all denied and **no request** to `googletagmanager.com` happens. **Reject:** still no GA request, the choice survives reload, and the banner is gone. **Accept:** `consent update` grants `analytics_storage` (ads stay denied) and a `gtag/js` request is attempted after load. **Footer 「Cookie 設定」:** reopens the banner with focus on its heading; switching to Reject deletes the `_ga*` cookies. **Keyboard:** reachable early, both buttons operable, no focus trap. **`?notrack=1`:** the banner is hidden and GA is never requested. Runs in all 4 locales on `chromium-desktop` and in zh on `webkit-mobile`. |
+| `analytics` | after Accept: `window.dataLayer` receives `contact_click` (LinkedIn, CakeResume, email), `reveal_email`, `copy_email`, `select_language`, `select_theme` and `toggle_motion` with the right parameters. Before consent and after Reject: none of these reach `dataLayer`. |
+| `contact` | before the click, the HTML, `document.body.innerText` and all `<a href>` values contain neither the address nor `mailto:`. 「顯示 Email」 reveals `t0921988961+portfolio@gmail.com`, announces it through the live region, and focuses 「複製」. Copy works (clipboard permission granted in the test). The 「寄信」 link has the correct `mailto:`. With JavaScript disabled, the `<noscript>` text shows. LinkedIn and CakeResume are the primary buttons. |
+| `seo` | canonical, hreflang (indexable locales plus `x-default` → `/en`), OG tags and image URLs, JSON-LD without email or GitHub; sitemap and robots content, including the AI-crawler rules in §10.7; icons |
 | `motion` | with motion on, every `[data-reveal]` ends visible after scrolling; the pause toggle stops the Canvas, marquee and mock and is remembered; with reduced motion, everything is visible immediately and Lenis is absent |
-| `links` | `rel="noopener noreferrer"` on external links, the exact `mailto:`, the résumé slot hidden while `null` |
+| `links` | `rel="noopener noreferrer"` on external links, exact LinkedIn and CakeResume URLs, the résumé slot hidden while `null` |
 
 ### 11.3 Visual regression testing (VRT)
 
@@ -430,27 +554,50 @@ Commit reference screenshots ("baselines"). On every PR, CI takes the same scree
 #### Evidence from the review (*measured* on the prototype: Chromium, reduced motion, Canvas and grain hidden, DPR 1)
 
 - **Stability:** two separate runs of the same 6 full-page screenshots differed by **0 pixels**. Flakiness comes from changing environments (macOS vs Linux, a Chromium upgrade), not from the page itself, and running everything in the same Docker image removes that.
-- **Size:** full-page PNGs are 0.9 MB (375), 1.2 MB (768) and 1.6 MB (1440). Revision 1's 40 snapshots would be about **40 MB per full refresh**, and git keeps every old version forever.
-- **Speed:** about 2.5 s per screenshot, so about 1 min for 17 and under 2 min for 40.
+- **Size:** full-page PNGs are 0.9 MB (375), 1.2 MB (768) and 1.6 MB (1440). Refreshing all 17 PR snapshots adds about **16 MB** to git history; refreshing all 38 adds about **33 MB**. Git keeps every old version.
+- **Speed:** about 2.5 s per screenshot, so about 1 min for the 17 PR snapshots and 1.5–2 min for all 38.
 - **A bug VRT already found:** the 1–3 px horizontal overflow (§1).
 
 #### Tool
 
 | Option | Verdict |
 | --- | --- |
-| **Playwright `toHaveScreenshot` + baselines in git** | **Use this.** No account, the same runner as E2E, and the Playwright HTML report has a diff slider. The smaller matrix keeps repository growth to about 10–20 MB per refresh. |
-| Argos (Hobby: free, up to 5,000 screenshots a month; public repos have public screenshots) | **Planned fallback**, not used now. Baselines live in Argos instead of git, and approval is a button in its UI, so there are no update commits. Switch if the `.git` folder grows past about 200 MB or the update flow gets in the way. The test code stays the same apart from the screenshot call. |
+| **Playwright `toHaveScreenshot` + baselines in git** | **Use this.** No account, the same runner as E2E, and the Playwright HTML report has a diff slider. |
+| Argos (Hobby: free, up to 5,000 screenshots a month; public repos have public screenshots) | **Planned fallback.** Baselines would live in Argos instead of git, and approval is a button in its UI. Switch trigger: see repository size below. |
 | Lost Pixel / Chromatic / Git LFS | Rejected (§14). |
 
-#### Coverage: 17 snapshots (D6)
+#### Coverage (D6): two tiers
+
+Tests are tagged `@pr` or `@full`. Every PR runs only `@pr` (17 snapshots). The **"VRT full matrix"** workflow, triggered by hand, runs both tags (38 snapshots).
+
+**Tier 1, every PR, 17 snapshots (blocking):**
 
 | Group | Snapshots | Why |
 | --- | --- | --- |
 | zh-TW full page × 375/768/1440 × light/dark | 6 | The main locale, at every breakpoint and in both themes |
 | en, ja, ko full page × 375/1440, light | 6 | Long English and Korean strings break layouts **by width**, not by theme. Theme colors are tokens shared by all locales, so zh dark already covers dark mode. |
-| States | 5 | mobile menu open (zh, light and dark), language menu open (zh 1440), 404 (375 light), privacy disclosure open (en 375) |
+| States: consent banner (zh 375 light), email revealed (Contact section, zh 375 light), mobile menu open (zh 375 dark), language menu open (zh 1440 light), 404 (375 light) | 5 | The interactive states most likely to break |
 
-- The full matrix (24 full pages plus states) is tagged `@full` and runs only when triggered by hand (`npm run vrt:full` or the workflow input) before a launch or a redesign. Its extra baselines are kept in a separate folder that is not committed by default.
+**Tier 2, full matrix, run by hand (adds 21 snapshots, 38 total):**
+
+| Group | Extra snapshots |
+| --- | --- |
+| en, ja, ko full page at 768 light, and at 375/768/1440 dark | 12 |
+| Consent banner: zh 1440 dark, en 375 light, ja 375 light, ko 375 light | 4 |
+| Mobile menu open zh 375 light; language menu open zh 1440 dark | 2 |
+| Email revealed en 1440 dark; privacy disclosure open en 375 light; 404 at 1440 dark | 3 |
+
+**When to run Tier 2:** before launch (M4), before any major redesign or theme-token change, and after a Playwright upgrade. Go to Actions → **VRT full matrix** → Run workflow → choose the branch.
+
+**Tier 2 baselines go stale between runs.** Normal PRs only refresh the 17 Tier 1 baselines, so the 21 Tier 2 baselines fall behind whenever the UI changes. A Tier 2 run is therefore a **review checkpoint**:
+1. Run it with `update: false`. Every diff since the last full run shows up together.
+2. Review them in the report, the same way as for a PR.
+3. Run it again with `update: true` to refresh all 38 baselines in one commit.
+
+Tier 2 is not a required check, so a stale Tier 2 baseline never blocks a normal PR.
+
+- Every full-page shot is taken **with a choice already stored**, so the banner doesn't appear on it; the banner has its own snapshots.
+- Full-page shots show the Contact section **before** reveal. The address only appears in the clipped "email revealed" shots, which are in the public repo; the address is in those images either way.
 - **Stabilizers:**
   - `reducedMotion: "reduce"`, `animations: "disabled"`, `caret: "hide"`.
   - `stylePath: tests/vrt/vrt.css` hides the Canvas, grain and cursor.
@@ -459,26 +606,39 @@ Commit reference screenshots ("baselines"). On every PR, CI takes the same scree
   - DPR 1, Chromium only.
   - Pixel thresholds: `maxDiffPixelRatio: 0.002` and per-pixel `threshold: 0.2`.
   - `updateSnapshots: "none"` in CI.
-- **Where baselines live:** `tests/vrt/__screenshots__/` (about 20 MB).
+- **Where baselines live:** `tests/vrt/__screenshots__/{pr,full}/`, about 33 MB for all 38.
+
+#### Repository size and mitigations
+
+- **Expected growth:**
+  - A zh-only text edit changes 6 Tier 1 shots, about 7 MB.
+  - A Tier 2 checkpoint adds about 33 MB.
+  - With about 10 visual updates and 2–3 checkpoints a year, `.git` grows by roughly 150–250 MB a year.
+- **Mitigations:**
+  1. **Lossless recompression.** The update workflows run `oxipng -o 4 --strip safe` on new PNGs. Playwright compares decoded pixels, not file bytes, so recompressed baselines still match. Typical savings are 10–30%; M4 measures the real number.
+  2. **CI is unaffected.** `actions/checkout` fetches only the latest commit (`fetch-depth: 1`). `git clone --filter=blob:none` keeps Luke's own clones fast.
+  3. **Clipped states.** State snapshots are viewport-sized or clipped to one section.
+  4. **Switch trigger:** if `.git` passes about **300 MB**, move to Argos. The tests stay the same apart from the screenshot call.
+- History is never rewritten to shrink the repository; that would break every clone and PR.
 - **Environment:** generated and compared **only** inside `mcr.microsoft.com/playwright:v<pinned>-noble`, locally through `npm run vrt` and `npm run vrt:update`, which wrap `docker run`. Plain `npx playwright test --project=vrt` on a Mac refuses to run.
 
 #### Updating baselines (no personal access token needed)
 
 1. A PR changes the UI and the `browser` check fails on VRT. Open the run → Artifacts → `playwright-report` → the failed test → *Diff / Slider*.
-2. If the change is intended, go to Actions → **Update VRT baselines** → Run workflow → choose the PR branch. It regenerates the snapshots in the pinned image and commits them with the built-in `GITHUB_TOKEN`.
+2. If the change is intended, go to Actions → **Update VRT baselines** → Run workflow → choose the PR branch. It regenerates the Tier 1 snapshots in the pinned image, recompresses them with `oxipng`, and commits them with the built-in `GITHUB_TOKEN`.
 3. GitHub does not start normal CI for commits pushed with `GITHUB_TOKEN`. It shows the PR's runs as **"Approve workflows to run"**, and Luke clicks that button once. The same workflow can also start CI on the branch itself with `gh workflow run ci.yml --ref <branch>`, because `workflow_dispatch` events are allowed to start runs. Phase M1 decides which is smoother. Revision 1's `VRT_PUSH_TOKEN` is **dropped**.
 4. In the PR, GitHub's image diff (2-up, swipe, onion skin) shows the new PNGs. Review them, then merge.
 5. Never update baselines to silence an unintended diff.
 
 ### 11.4 Accessibility checks: axe
 
-- `@axe-core/playwright` inside the `browser` job, on 4 locales × 2 themes, with the mobile menu, language menu and privacy disclosure open.
+- `@axe-core/playwright` inside the `browser` job, on 4 locales × 2 themes, with the mobile menu, language menu, privacy disclosure, **consent banner** and **revealed email** open.
 - Tags `wcag2a`, `wcag2aa`, `wcag21aa`, `wcag22aa`. Any violation fails.
 - Scans run after a full scroll with motion on, and again with reduced motion.
 
 ### 11.5 Lighthouse CI
 
-- `@lhci/cli autorun` on the local build (GA off), for `/` and `/en` (ja and ko are covered by the same templates), mobile preset, 3 runs, median.
+- `@lhci/cli autorun` on the local build, for `/` and `/en` (ja and ko are covered by the same templates), mobile preset, 3 runs, median. Lighthouse always starts as a first-time visitor, so it sees the **consent banner and no GA**, which is exactly what a new real visitor gets. The banner must not become the LCP element or cause layout shift.
 - **Blocking assertions:** accessibility ≥ 0.95, SEO = 1, best practices ≥ 0.95, CLS ≤ 0.05, `total-byte-weight` ≤ 700 KB.
 - **Warnings only:** performance ≥ 0.85, LCP ≤ 2.5 s, TBT ≤ 200 ms. They are noisy on shared runners; the deterministic byte budgets in `quality` do the blocking.
 
@@ -489,10 +649,11 @@ Commit reference screenshots ("baselines"). On every PR, CI takes the same scree
 | Job | Required? | Contents | Typical time |
 | --- | --- | --- | --- |
 | `quality` | yes | lint, `tsc`, Vitest with coverage, `next build`, budget script | about 2 min |
-| `browser` | yes | in the Playwright container: build, E2E (2 projects), axe, VRT (17); upload `playwright-report` on failure | about 5 min |
+| `browser` | yes | in the Playwright container: build, E2E (2 projects, including consent and contact specs), axe, VRT Tier 1 (17); upload `playwright-report` on failure | about 5–6 min |
 | `lighthouse` | yes (only the blocking assertions above) | build, LHCI | about 3 min |
 
-- **`update-vrt.yml`:** runs only when triggered by hand (§11.3).
+- **`update-vrt.yml`:** triggered by hand; regenerates and recompresses the Tier 1 baselines (§11.3).
+- **`vrt-full.yml`:** triggered by hand (`workflow_dispatch`, input `update: true/false`); runs all 38 snapshots and, with `update: true`, commits refreshed baselines. Not a required check.
 - **Cost:** the repo is public, so GitHub-hosted runner minutes are free.
 - **Ruleset:** worth keeping, and a one-time setup.
   - Agents open the PRs here. Without a ruleset, a red PR or a direct push to `main` can reach production.
@@ -508,8 +669,12 @@ Commit reference screenshots ("baselines"). On every PR, CI takes the same scree
 
 - **Devices:** iPhone Safari, Android Chrome, Windows Chrome or Edge (to check the font fallback), macOS Safari, each at 375, 768 and 1440.
 - **Accessibility:** keyboard only, VoiceOver, NVDA, and the motion pause toggle.
-- **Performance:** slow 4G (the hero must be readable before the Canvas appears), and PageSpeed Insights on production with GA.
-- **Analytics:** the GA DebugView walkthrough (§9.7).
+- **Performance:** slow 4G (the hero must be readable before the Canvas appears), and PageSpeed Insights on production (first-visit state), plus one DevTools Lighthouse run after Accept.
+- **Analytics:** the GA DebugView walkthrough (§9.7), including Reject → nothing in Realtime, and Accept → events appear.
+- **Consent banner:** check it on a real iPhone and a real Android phone. It must not cover the hero CTA or the iOS home indicator (`env(safe-area-inset-bottom)`).
+- **Email:** View Source on production and search for `gmail`: **zero hits**. Then click 「顯示 Email」 and send a test email to the `+portfolio` alias to confirm the Gmail filter.
+- **Firewall:** a week after launch, read Vercel Firewall's AI-bot log and confirm the AI Crawlers deny rule is working.
+- **VRT Tier 2:** run the full matrix once on the launch branch, review it, and refresh it.
 
 ---
 
@@ -519,34 +684,93 @@ Each milestone is **its own PR**, merged only when CI is green, so production im
 
 | Milestone | Scope | Exit criteria |
 | --- | --- | --- |
-| **M0. Ship the approved design** (this PR) | Plan approved, then merge PR #1. `/design` gets `noindex`. Production shows the prototype instead of the starter page. | Luke approves the plan and merges |
-| **M1. Foundation and structure** | CI (`quality` and `browser` without VRT), Vitest and Playwright setup, `cacheComponents` off, two root layouts, cookie redirect, typed dictionaries, metadata, hreflang, sitemap, robots, 404, security headers; port the sections as Server Components and islands; overflow fix; remove `contact.note` | E2E, axe and content guards green; visually equal to the prototype on manual check |
+| **M0. Ship the approved design** (this PR, D4) | After final plan approval: the pre-merge hardening commit (§7: email to click-to-reveal, footer note removed, `/design` noindex, overflow fix), then Luke merges PR #1. Production shows the approved design instead of the starter page. No analytics yet. | View Source on production has no `gmail`; Luke merges |
+| **M1. Foundation and structure** | CI (`quality` and `browser` without VRT), Vitest and Playwright setup, `cacheComponents` off, two root layouts, cookie redirect, typed dictionaries, metadata, hreflang, sitemap, robots (including AI-crawler rules), 404, security headers; port the sections as Server Components and islands, including `EmailReveal` and the `check-no-email` guard | E2E, axe, content and no-email guards green; visually equal to the prototype on manual check |
 | **M2. Performance and accessibility** | font subset pipeline, lazy motion and Canvas, CSS hero intro, pause toggle, Experience rows readable without expanding, accessibility fixes, budget script, LHCI; delete `/design` and `components/design` | budgets and LHCI blocking assertions green; PageSpeed Insights mobile ≥ 90 on the preview |
-| **M3. Analytics, privacy and social** | GA (`lazyOnload`, Consent Mode, opt-out), `track()` and events, Vercel Web Analytics, privacy notice, static OG images, JSON-LD, Search Console meta tag, translation notes, ja and ko `noindex` gate | analytics E2E green; DebugView walkthrough done after merge |
-| **M4. VRT and launch checks** | Generate the 17 baselines in Docker, add the `update-vrt` workflow and the ruleset (Luke), README runbook; custom domain (D2), UTM links on LinkedIn and CakeResume, LinkedIn Post Inspector, Search Console sitemap | all three checks required and green; the manual list in §11.7 is done |
-| **Later** | Native ja and ko review → remove `noindex` and add them to hreflang and the sitemap; the résumé PDF if wanted | — |
+| **M3. Consent, analytics, privacy and social** | consent banner (4 languages, Consent Mode v2, footer 「Cookie 設定」), GA (`lazyOnload`, only after Accept, opt-out), `track()` and events, Vercel Web Analytics, privacy notice, static OG images, JSON-LD, Search Console meta tag, translation notes, ja and ko `noindex` gate | consent, analytics and contact E2E green; DebugView walkthrough done after merge |
+| **M4. VRT and launch checks** | Tier 1 baselines (17) and `update-vrt.yml`; `vrt-full.yml` plus its first full run (38); ruleset (Luke); README runbook; UTM links on LinkedIn and CakeResume; LinkedIn Post Inspector; Search Console sitemap; Vercel AI-bot firewall settings (Luke) | the three required checks green; the first full matrix reviewed and refreshed; the manual list in §11.7 done |
+| **Later (optional)** | native ja and ko review → remove `noindex` and add them to hreflang and the sitemap; the résumé PDF; the contact form (§10.6) if Luke wants one; a custom domain (§10.3) | — |
 
 VRT arrives in M4 on purpose. Baselines taken while M1–M3 are still changing the UI would need regenerating on almost every PR, and that churn is exactly the cost the review found.
 
 ---
 
-## 13. Maintenance runbook for Luke
+## 13. Runbook, Luke's to-do list and email safety
 
-**Changing text** (for example a new job or an edited bullet):
+### 13.1 Changing text
+
 1. Edit `lib/i18n/dictionaries/zh-TW.ts`, then update en, ja and ko, or ask an agent to translate them and mark ja and ko for review in `docs/content-review.md`.
 2. Run `npm run fonts` if a new Chinese, Japanese or Korean character appears. CI tells you if you forget.
-3. Open a PR. Expect VRT to fail for the changed locales; review the diff and run **Update VRT baselines**.
+3. Open a PR. Expect VRT Tier 1 to fail for the changed locales; review the diff and run **Update VRT baselines**.
 4. If the tagline or name changed, run `npm run og` to regenerate the OG images.
 5. Merge. Vercel deploys. If something is wrong, use Instant Rollback (§10.4).
 
 **Expected upkeep:**
 - Dependabot PRs about once a month, merged only when green.
-- A Playwright bump plus a baseline refresh about twice a year.
+- A Playwright bump plus a Tier 2 checkpoint about twice a year.
 - Nothing else recurring.
+
+### 13.2 What Luke has to do himself (agents can't)
+
+| When | Task |
+| --- | --- |
+| Now | Give **final approval** of this plan. Then an agent makes the M0 pre-merge commit, and **Luke merges PR #1**. |
+| Now (independent of the site) | The Google account and Gmail steps in §13.3. Check the contact-info visibility settings on **CakeResume** and **LinkedIn**: show the email only to connections or recruiters, not publicly, where those settings exist. |
+| M3, after merge | **Vercel dashboard** → Analytics → enable **Web Analytics**. **GA Admin**: mark `contact_click` as a key event; register the custom dimensions (§9.2); data retention 14 months; Google signals off. **Search Console**: add a URL-prefix property for `https://luke-look.vercel.app/`, copy the meta-tag token, and give it to the agent (env var `GOOGLE_SITE_VERIFICATION`). |
+| M3, after merge | Open `https://luke-look.vercel.app/?notrack=1` **once on each of your devices**, after the DebugView check in §9.7. |
+| M4 | **GitHub ruleset** for `main` (§11.6, about 2 minutes). **Vercel Firewall** → Rules → Bot Management → AI Bots: *AI Crawlers = Deny*, *AI Assistants = Allow* → Publish. |
+| M4, after launch | Update the website links on **LinkedIn** and **CakeResume** to the UTM URLs (§9.6), then re-scrape with LinkedIn Post Inspector. In Search Console, submit `sitemap.xml`. |
+| Whenever VRT fails on an intended change | Review the report, run **Update VRT baselines**, and click **Approve workflows to run** on the PR (§11.3). |
+| Later | Find native ja and ko reviewers. Decide on a résumé PDF, a contact form and a custom domain. |
+
+### 13.3 Email and account safety tips (no paid services)
+
+1. **Google account:**
+   - Turn on **2-Step Verification**, preferably with a **passkey** or a hardware security key rather than SMS. The email's local part looks like your phone number, which makes SIM-swap attempts more tempting.
+   - Run **Google Security Checkup** (myaccount.google.com/security-checkup) and remove old devices and apps.
+2. **Gmail filter for the site alias:**
+   - Gmail → Settings → Filters → Create filter.
+   - *To:* `t0921988961+portfolio@gmail.com` → Apply label 「Portfolio」, Never send to Spam.
+   - Spam arriving at that alias came from the site. If it ever gets bad, change the alias in `lib/contact.ts`.
+3. **Never act on a link that asks for credentials, payment or verification.**
+   - Open the service directly (type the address or use a bookmark) instead of clicking.
+   - Gmail's yellow and red warning banners and "via" sender labels are worth reading.
+4. **Fake recruiter scams:**
+   - Be suspicious of requests for an ID-card copy, bank account details, or a "deposit" or "equipment fee", or of a push to move to LINE or Telegram right away.
+   - Verify through the company's official site or LinkedIn company page and an official domain email.
+   - **Never run a take-home or "test project" repository from a stranger on your main machine.** Malicious `npm install` and postinstall scripts are a known trick against developers. Use a throwaway VM, a container, or GitHub Codespaces.
+5. **Scam calls and texts:** an app such as Whoscall (free) helps. Taiwan's anti-fraud hotline is **165**.
+6. **Report, don't reply.** Use Gmail's "Report phishing". Replying confirms the address is active.
 
 ---
 
-## 14. Review changelog (revision 1 → 2)
+## 14. Review changelog
+
+### Revision 3: Luke's decisions (2026-11-16)
+
+| Decision | What changed in the plan |
+| --- | --- |
+| **D1** keep `t0921988961@gmail.com`, protect it | New §10.6: the address never appears in static HTML, RSC, JS strings, JSON-LD, sitemap or OG; it is assembled client-side on click and `mailto:` is created only after interaction; LinkedIn and CakeResume are the primary buttons; `+portfolio` alias by default; `check-no-email` build guard; `contact` E2E spec; new `reveal_email` event. Contact form specified as a later option (honeypot, minimum fill time, BotID Basic, WAF rate limit, Resend free tier) and explicitly not built at launch. New §10.7: AI training crawlers blocked in `robots.txt` and the Vercel AI Bots ruleset, AI assistants and search allowed; `ai.txt` and `noai` rejected. New §13.3: email and account safety tips. Honest list of what cannot be prevented. |
+| **D2** no custom domain | Search Console uses a URL-prefix property on vercel.app; the §10.3 checklist kept for later; no host hard-coded. |
+| **D3** no native reviewers yet | ja and ko stay `noindex`, out of the sitemap and hreflang, with the translation note. |
+| **D4** merge PR #1 first | M0 now includes a small pre-merge hardening commit (email reveal, footer note, `/design` noindex, overflow fix) so production never serves the plain address. |
+| **D5** consent banner | Region-only consent defaults replaced by a banner shown everywhere: 4 languages, non-blocking, equal Accept and Reject, remembered for 12 months, reopened from the footer 「Cookie 設定」. GA uses Basic Consent Mode: `gtag.js` is not downloaded until Accept, events before consent are dropped, and rejecting deletes the `_ga*` cookies. New `consent` E2E spec, banner VRT shots, axe with the banner open; Lighthouse measures the first-visit state. Vercel Web Analytics stays ungated because it is cookieless (disclosed, and one condition to change). |
+| **D6** VRT (revised by Luke) | **17 snapshots (Tier 1) on every PR**, blocking. The **full matrix of 38 (Tier 2)** runs only by hand through `vrt-full.yml` (`workflow_dispatch`) before launch, before major redesigns, and after Playwright upgrades; it is a non-blocking review checkpoint that refreshes the stale Tier 2 baselines. Size mitigations: lossless `oxipng`, shallow CI checkout, clipped states, and Argos if `.git` passes 300 MB. The Tier 1 states now include the consent banner and the revealed email. |
+
+Considered and rejected in revision 3:
+
+| Idea | Why not |
+| --- | --- |
+| A contact form at launch | A new spam target and dynamic endpoint with a secret; LinkedIn and CakeResume already cover contact; kept as a specified option |
+| Formspree free | Visitor data goes to another third party; small free quota; reCAPTCHA-based spam protection brings privacy and consent baggage |
+| Cloudflare Turnstile | Needs a Cloudflare account and a third-party script; Vercel BotID Basic is native and free |
+| Blocking every AI bot, including assistants | Recruiters increasingly search with AI assistants; with the email out of the HTML, assistants reading the page is low risk |
+| `ai.txt`, `noai` / `noimageai` meta | Not standards; major crawlers ignore them |
+| Advanced Consent Mode (cookieless pings before consent) | Sends data before a choice; Basic is simpler to explain and test, and keeps 180 KB of `gtag.js` away from visitors who reject |
+| Gating Vercel Web Analytics behind the banner | It is cookieless and stores nothing; disclosed instead (can be changed with one condition) |
+| An image of the email address | Unreadable for screen readers, can't be copied, and OCR defeats it anyway |
+
+### Revision 2 (adversarial review)
 
 ### Changed, ordered by severity
 
@@ -554,12 +778,12 @@ VRT arrives in M4 on purpose. Baselines taken while M1–M3 are still changing t
 | --- | --- | --- |
 | Critical | `dynamicParams = false` **fails the build** with `cacheComponents: true`, which this repo has enabled | Turn off `cacheComponents` and `partialPrefetching`; everything is static (§2.1) |
 | Critical | ja, ko and en pages could suggest language proficiency the résumé doesn't claim; ja and ko are unreviewed and contain at least one wrong term | Translation note, native-review gate, `noindex` until reviewed, `knowsLanguage` removed from JSON-LD (§3.2, D3) |
-| Critical | GA set cookies for EU visitors with no consent handling and no privacy notice | Consent Mode v2 regional defaults, privacy disclosure, Google signals off (§9.4, D5) |
+| Critical | GA set cookies for EU visitors with no consent handling and no privacy notice | Consent Mode v2 regional defaults, privacy disclosure, Google signals off (§9.4, D5). *Superseded in revision 3 by a banner for every visitor.* |
 | Critical | Looping Canvas, marquee and mock with no pause control fails **WCAG 2.2.2 (A)**; reduced motion alone is not enough | Visible pause toggle (§5.1) |
 | High | `proxy.ts` rewrite plus `/zh-TW` redirect was fragile (RSC prefetch) and ran a function on every visit to `/` | Two root layouts, and the cookie redirect in `next.config` `redirects` with `has` (§2.2) |
 | High | Font plan: build-time subsetting needs about 30 MB of sources or network at build; `next/font/local` would preload all three families everywhere | Committed exact-glyph subsets (sizes measured), coverage test, `preload: false` plus one manual preload, OFL file (§5.2) |
 | High | Budgets ambiguous: 180 KB "initial JS" vs LHCI counting lazy chunks; `gtag.js` (about 180 KB compressed, measured) ignored | Budgets split by what is measured and how; GA `lazyOnload`; production PSI target includes GA (§5.3, §9.1) |
-| High | VRT: 40 full pages ≈ 40 MB per refresh in git history; baselines taken while the UI still changes = churn; `VRT_PUSH_TOKEN` unnecessary | 17 snapshots plus an opt-in full run, VRT moved to M4, update flow without a personal token, Argos as documented fallback (§11.3, D6) |
+| High | VRT: 40 full pages ≈ 40 MB per refresh in git history; baselines taken while the UI still changes = churn; `VRT_PUSH_TOKEN` unnecessary | 17 snapshots plus an opt-in full run, VRT moved to M4, update flow without a personal token, Argos as documented fallback (§11.3, D6). Confirmed by Luke in revision 3 (Tier 1 / Tier 2). |
 | High | Email address looks like a phone number | Decision D1 |
 | High | One big launch PR with 9 phases; production stays on the starter page for the whole build | 5 milestones as separate mergeable PRs, interim site at M0 (§12, D4) |
 | Medium | `x-default` pointed to Chinese | `x-default` → `/en` (§4) |
@@ -584,8 +808,8 @@ VRT arrives in M4 on purpose. Baselines taken while M1–M3 are still changing t
 | Static export (`output: "export"`) | Loses the `redirects` with cookie conditions and `headers()`; Vercel already serves prerendered pages from its CDN |
 | Redirect by `Accept-Language` | Google advises against it; crawlers would see inconsistent content; the explicit switcher plus cookie is enough |
 | Proxying GA through the site's domain to dodge ad blockers | Overrides the visitor's choice, and is complex; Vercel Web Analytics covers counting instead |
-| A consent banner for everyone | Hurts the first impression for the Taiwanese audience; regional Consent Mode defaults cover the EU case (D5 can still change this) |
-| Obfuscating the email with JavaScript | Modern harvesters run JavaScript; it breaks no-JS and screen-reader use; Gmail filters spam well. The real issue is the address itself (D1) |
+| A consent banner for everyone | Hurts the first impression for the Taiwanese audience; regional Consent Mode defaults cover the EU case. *Reversed in revision 3: Luke chose the banner (D5).* |
+| Obfuscating the email with JavaScript | Modern harvesters run JavaScript; it breaks no-JS and screen-reader use; Gmail filters spam well. The real issue is the address itself (D1). *Reversed in revision 3: Luke keeps the address, so click-to-reveal is adopted (§10.6). It stays accessible (real button, live region) and has a `<noscript>` fallback to LinkedIn and CakeResume.* |
 | Nonce-based CSP | Forces dynamic rendering of every page |
 | Git LFS for baselines | GitHub's free LFS bandwidth is consumed by every CI checkout; extra setup for little gain at 17 snapshots |
 | Chromatic | Built around Storybook, which this project does not use |
