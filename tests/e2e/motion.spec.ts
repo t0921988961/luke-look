@@ -45,6 +45,30 @@ test.describe("motion", () => {
     expect(await hiddenReveals(page)).toBe(0);
   });
 
+  test("the name mark is already drawn when motion is reduced", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    await expect(page.locator(".who-name")).toHaveCount(9);
+    const offset = await page.locator(".who-name").first().evaluate((el) => getComputedStyle(el).strokeDashoffset);
+    expect(offset === "0px" || offset === "0").toBe(true);
+    expect(await page.locator(".who-blue").evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
+  });
+
+  test("hero buttons lean toward a fine pointer only while motion plays", async ({ page, isMobile }) => {
+    test.skip(Boolean(isMobile), "magnetic pull is for fine pointers");
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("/");
+    await page.waitForFunction(() => document.documentElement.dataset.story === "on");
+    const link = page.locator("a.magnetic").first();
+    const box = await link.boundingBox();
+    if (!box) throw new Error("hero action has no box");
+    await page.mouse.move(box.x + box.width / 2 + 24, box.y + box.height / 2 + 8);
+    await expect.poll(() => link.evaluate((el) => el.style.transform)).toContain("translate");
+    await page.locator("#site-footer").getByRole("button", { name: "暫停動態" }).click();
+    await page.mouse.move(box.x + box.width / 2 + 20, box.y + box.height / 2);
+    await expect.poll(() => link.evaluate((el) => el.style.transform)).toBe("");
+  });
+
   test("without JavaScript the whole page is readable", async ({ browser }) => {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();

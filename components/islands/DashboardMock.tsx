@@ -1,65 +1,9 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { useLoopsRunning } from "@/lib/motion";
-import { loadGsap } from "@/components/motion/load";
-
-/** Abstract, text-free dashboard. Being text-free lets it mirror cleanly to show an RTL layout. */
+/** Abstract, text-free dashboard. The looping theme change starts from the deferred chunk. */
 export function DashboardMock({ note }: { note: string }) {
-  const root = useRef<HTMLElement>(null);
-  const [dark, setDark] = useState(false);
-  const [rtl, setRtl] = useState(false);
-  const motion = useLoopsRunning();
-
-  useEffect(() => {
-    if (!motion || !root.current) return;
-    const scope = root.current;
-    let revert: (() => void) | undefined;
-    let cancelled = false;
-    loadGsap().then(({ gsap }) => {
-      if (cancelled) return;
-      const ctx = gsap.context(() => {
-        const tl = gsap.timeline({
-          repeat: -1,
-          repeatDelay: 0.6,
-          paused: true,
-          defaults: { ease: "expo.out" },
-        });
-        tl.fromTo("[data-mock-line]", { drawSVG: "0%" }, { drawSVG: "100%", duration: 1.8, ease: "power2.inOut" }, 0)
-          .fromTo("[data-mock-area]", { opacity: 0 }, { opacity: 1, duration: 1.2 }, 0.8)
-          .fromTo("[data-mock-bar]", { scaleY: 0 }, { scaleY: 1, duration: 1, stagger: 0.06 }, 0.2)
-          .fromTo("[data-mock-kpi]", { scaleX: 0 }, { scaleX: 1, duration: 1, stagger: 0.1 }, 0.1)
-          .fromTo("[data-mock-dot]", { scale: 0 }, { scale: 1, duration: 0.6, stagger: 0.08, ease: "back.out(3)" }, 0.6)
-          .call(() => setDark(true), [], 2.6)
-          .call(() => setRtl(true), [], 4.4)
-          .to("[data-mock-body]", { rotateY: 180, duration: 1.1, ease: "power3.inOut" }, 4.4)
-          .call(() => setRtl(false), [], 7.2)
-          .to("[data-mock-body]", { rotateY: 0, duration: 1.1, ease: "power3.inOut" }, 7.2)
-          .call(() => setDark(false), [], 9);
-
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: scope,
-            start: "top 85%",
-            end: "bottom 10%",
-            onToggle: (self) => (self.isActive ? tl.play() : tl.pause()),
-          },
-        });
-      }, scope);
-      revert = () => ctx.revert();
-    });
-    return () => {
-      cancelled = true;
-      revert?.();
-      setDark(false);
-      setRtl(false);
-    };
-  }, [motion]);
-
   return (
-    <figure ref={root} className="relative">
+    <figure data-dashboard="" className="relative">
       <div
-        data-mock-theme={dark ? "dark" : "light"}
+        data-mock-theme="light"
         className="group/mock relative aspect-[16/11] overflow-hidden rounded-[22px] border border-line-strong shadow-[var(--shadow)] transition-colors duration-700 [--m-bg:#f3f5fb] [--m-card:#ffffff] [--m-line:#e3e8f4] [--m-ink:#c9d3ea] [--m-side:#ffffff] data-[mock-theme=dark]:[--m-bg:#0b1122] data-[mock-theme=dark]:[--m-card:#131b33] data-[mock-theme=dark]:[--m-line:#1e2846] data-[mock-theme=dark]:[--m-ink:#2b3a63] data-[mock-theme=dark]:[--m-side:#0f1630]"
         style={{ background: "var(--m-bg)" }}
       >
@@ -75,11 +19,14 @@ export function DashboardMock({ note }: { note: string }) {
           <div className="flex items-center gap-1.5 font-mono text-[9px] font-medium sm:text-[10px]">
             <span
               className="rounded-full px-2 py-0.5 transition-colors duration-500"
-              style={{ background: "var(--m-line)", color: dark ? "#c3cde6" : "#27324f" }}
+              data-mock-lang=""
+              style={{ background: "var(--m-line)", color: "#27324f" }}
             >
-              {rtl ? "RTL · עברית" : "LTR · EN"}
+              LTR · EN
             </span>
-            <span className="rounded-full bg-[#2456f0] px-2 py-0.5 text-white">{dark ? "Dark" : "Light"}</span>
+            <span data-mock-mode="" className="rounded-full bg-[#2456f0] px-2 py-0.5 text-white">
+              Light
+            </span>
           </div>
         </div>
 

@@ -15,11 +15,13 @@ export function LazyHorizon({ variant = "hero", className }: { variant?: "hero" 
       requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
       cancelIdleCallback?: (id: number) => void;
     };
+    // Wait until the browser is idle. A short timeout was starting the canvas
+    // during Lighthouse's blocking window.
     if (win.requestIdleCallback) {
-      const id = win.requestIdleCallback(() => setReady(true), { timeout: 1500 });
+      const id = win.requestIdleCallback(() => setReady(true), { timeout: 4000 });
       return () => win.cancelIdleCallback?.(id);
     }
-    const id = window.setTimeout(() => setReady(true), 300);
+    const id = window.setTimeout(() => setReady(true), 1600);
     return () => window.clearTimeout(id);
   }, []);
 

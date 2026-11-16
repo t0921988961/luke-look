@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { EmailReveal } from "@/components/islands/EmailReveal";
+import { startExperience } from "@/components/islands/deferred";
 import { ExperienceList } from "@/components/islands/ExperienceList";
 import { LanguageSwitch } from "@/components/islands/LanguageSwitch";
 import { SiteHeader } from "@/components/islands/SiteHeader";
@@ -114,6 +115,7 @@ describe("ExperienceList", () => {
   it("opens the first role and toggles one panel at a time", async () => {
     const user = userEvent.setup();
     render(<ExperienceList items={items} labels={labels} />);
+    startExperience();
     const [first, second] = screen.getAllByRole("button");
     expect(first).toHaveAttribute("aria-expanded", "false");
     expect(screen.getByText(items[0].summary)).toBeInTheDocument();

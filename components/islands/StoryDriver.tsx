@@ -191,7 +191,6 @@ export function startStory(): () => void {
 
     kick();
     scene.dataset.ready = "true";
-    document.documentElement.dataset.story = "on";
     track.addEventListener("click", onClick);
     track.addEventListener("keydown", onKey);
     const unsub = onLoopsChange(kick);

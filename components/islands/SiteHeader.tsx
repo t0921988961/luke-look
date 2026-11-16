@@ -113,9 +113,18 @@ export function SiteHeader({
     let stop = () => {};
     let cancelled = false;
     const timer = window.setTimeout(() => {
-      import("@/components/islands/StoryDriver").then(({ startStory }) => {
-        if (!cancelled) stop = startStory();
-      });
+      Promise.all([import("@/components/islands/StoryDriver"), import("@/components/islands/deferred")]).then(
+        ([story, deferred]) => {
+          if (cancelled) return;
+          const stopStory = story.startStory();
+          const stopDeferred = deferred.startDeferred();
+          document.documentElement.dataset.story = "on";
+          stop = () => {
+            stopStory();
+            stopDeferred();
+          };
+        },
+      );
     }, 0);
     return () => {
       cancelled = true;

@@ -14,17 +14,27 @@ export function MotionRoot() {
     if (!allowed) return;
     let cleanup: (() => void) | undefined;
     let cancelled = false;
-    import("./engine")
-      .then(({ startMotion }) => startMotion({ cursor: ring.current, dot: dot.current, progress: progress.current }))
-      .then((stop) => {
-        if (cancelled) stop();
-        else cleanup = stop;
-      })
-      .catch(() => {
-        // Motion is decoration; the page is complete without it.
-      });
+    const run = () => {
+      import("./engine")
+        .then(({ startMotion }) => startMotion({ cursor: ring.current, dot: dot.current, progress: progress.current }))
+        .then((stop) => {
+          if (cancelled) stop();
+          else cleanup = stop;
+        })
+        .catch(() => {
+          // Motion is decoration; the page is complete without it.
+        });
+    };
+    const win = window as Window & {
+      requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    const idle = win.requestIdleCallback?.(run, { timeout: 4000 });
+    const timer = idle === undefined ? window.setTimeout(run, 1600) : undefined;
     return () => {
       cancelled = true;
+      if (idle !== undefined) win.cancelIdleCallback?.(idle);
+      if (timer !== undefined) window.clearTimeout(timer);
       cleanup?.();
     };
   }, [allowed]);
