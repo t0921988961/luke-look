@@ -1,6 +1,6 @@
 # Enhancements v2
 
-Status: implemented on `feature/enhancements-v2`. This branch does not touch production. `main` stays the release branch.
+Status: round 2 on `feature/enhancements-v2`. This branch does not touch production. `main` stays the release branch. PR #16 CI (quality, browser, lighthouse) was green before this round.
 
 Inputs: `docs/design.md`, `docs/plan.md`, and `resume_v3_zh.md`. S5-Style’s gallery (editorial timelines, drawn lines, chapter-like case studies) and Awwwards motion patterns (path-following, staged line drawing, a scrubbable story) were used as reference only. Nothing is copied.
 
@@ -16,14 +16,22 @@ Inputs: `docs/design.md`, `docs/plan.md`, and `resume_v3_zh.md`. S5-Style’s ga
 | 6 | Lottie, Framer Motion, or a second animation runtime | GSAP is already the lazy motion runtime. The story uses CSS `pathLength` plus a few lines of geometry so the first bundle does not grow a library. | **Reject** |
 | 7 | Sticky story on phones | A pinned 100vh scene clips the five captions on a 375-wide screen and fights the thumb. Desktop pins; mobile plays and scrolls the natural height. | **Reject sticky on small screens** |
 | 8 | Autoplay on load | It would run beside the hero and the horizon. Play starts only from the button or from scrolling the story. | **Reject** |
-| 9 | Hero Canvas rewrite | The horizon already pauses off-screen, caps DPR, and follows the palette. A rewrite risks Lighthouse and the look Luke approved. | **Leave** |
+| 9 | Hero Canvas rewrite | The horizon already pauses off-screen, caps DPR, and follows the palette. A rewrite risks Lighthouse and the look Luke approved. | **Leave the structure.** Round 2 only adds a second warm glint and draws fewer rows on a phone. The canvas stays in the lazy chunk. |
 | 10 | Contact form | Already specified as later work in `docs/plan.md`. It adds a dynamic route and a secret. | **Leave** |
+| 11 | Skill map with percentages | Same problem as rank 4. | **Reject percentages.** Round 2 draws one equal rule through the five résumé groups. Every group is the same size. |
+| 12 | Magnetic buttons | Pointer tracking would land in the header bundle. Initial JS is already at the 150 KB budget. | **Reject.** Hover uses CSS: a nav underline and a sheen on the hero button, both off when motion is paused or reduced. |
 
 ## What shipped
 
 - **Career story** (`#journey`, inside Experience). Five chronological stations from the résumé. A wave route draws, station icons draw in and stay drawn, and a warm blob morphs as it follows the route. Scroll scrubs the desktop sticky scene. Play / pause / replay and the station buttons seek it. `prefers-reduced-motion` and the site pause toggle leave a fully drawn static scene. Copy is in zh, en, ja, and ko.
 - **Work details.** Each project can open a short factual panel. Subscription numbers stay worded as product scale. Map, live video, and SignalR stay features.
 - **Deep links** from each station to the matching experience row.
+
+Round 2, still on this branch:
+
+- **Skill rule.** Five résumé groups sit on one line. There is no score and no bar. The line draws once when motion is on, and it is already drawn when motion is off.
+- **Light on the horizon.** A second warm glint crosses the existing Canvas. Phones draw fewer rows.
+- **CSS hover only.** The desktop nav grows a warm underline, and the hero contact button gets a sheen. Neither runs under reduced motion or the pause toggle, and neither adds a library.
 
 ## Content rules
 
