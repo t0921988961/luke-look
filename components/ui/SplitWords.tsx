@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import { tokenize } from "@/lib/tokenize";
 
@@ -12,7 +13,9 @@ export function SplitWords({ text, locale }: { text: string; locale: Locale }) {
             " "
           ) : (
             <span key={i} className="word inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] align-top">
-              <span className="word-inner inline-block will-change-transform">{tok}</span>
+              <span className="word-inner inline-block will-change-transform" style={{ "--i": i } as CSSProperties}>
+                {tok}
+              </span>
             </span>
           ),
         )}
