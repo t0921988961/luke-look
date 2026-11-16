@@ -50,11 +50,14 @@ export function Skills({ t, locale, translationNote = "" }: { t: Dict["skills"];
 
       <div className="mx-auto mt-16 max-w-[1440px] px-5 md:mt-24 md:px-10 xl:px-16">
         <div className="mx-auto max-w-[1312px]">
-          <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="skill-rail grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {t.groups.map((name, gi) => (
               <div key={gi} data-reveal className="border-t border-line-strong pt-5">
+                <span aria-hidden="true" className="skill-node">
+                  0{gi + 1}
+                </span>
                 <h3 className="flex items-baseline gap-2 text-[15px] font-bold text-ink">
-                  <span aria-hidden="true" className="font-mono text-[11px] font-normal text-primary">
+                  <span aria-hidden="true" className="font-mono text-[11px] font-normal text-primary xl:hidden">
                     0{gi + 1}
                   </span>
                   {name}

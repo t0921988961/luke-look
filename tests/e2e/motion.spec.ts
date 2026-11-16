@@ -28,6 +28,15 @@ test.describe("motion", () => {
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
+  test("the skill rule is already drawn when motion is reduced", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("/");
+    await expect(page.locator(".skill-node")).toHaveCount(5);
+    const drawn = await page.locator(".skill-rail").evaluate((el) => getComputedStyle(el, "::before").transform);
+    expect(drawn === "none" || drawn.startsWith("matrix(1, 0, 0, 1")).toBe(true);
+  });
+
   test("with reduced motion, everything is visible at once and smooth scrolling is off", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");

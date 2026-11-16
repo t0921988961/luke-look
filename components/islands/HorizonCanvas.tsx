@@ -119,8 +119,9 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
 
       const isHero = variant === "hero";
       const mobile = width < 640;
-      const rows = mobile ? 34 : 52;
-      const step = mobile ? 9 : 8;
+      // Fewer samples on a phone: the field still reads as a horizon, and each frame does less work.
+      const rows = mobile ? 28 : 46;
+      const step = mobile ? 11 : 8;
       const cols = Math.ceil(width / step) + 2;
 
       const focal = width * (mobile ? 0.9 : 0.55);
@@ -177,8 +178,10 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
           ys[c] = sy;
           // slope facing the light → warm glint
           const slope = Math.cos(wx * 1.3 + t * 0.55 + z * 0.8) * 0.65 + Math.cos(wx * 2.7 - t * 0.7 + z * 1.9) * 0.6;
-          const band = Math.exp(-Math.pow((sxFlat / width - (0.62 + Math.sin(t * 0.15) * 0.18)) * 2.6, 2));
-          glint[c] = Math.max(0, slope - 0.75) * band;
+          const travel = 0.62 + Math.sin(t * 0.15) * 0.18;
+          const band = Math.exp(-Math.pow((sxFlat / width - travel) * 2.6, 2));
+          const second = Math.exp(-Math.pow((sxFlat / width - (0.3 + Math.sin(t * 0.11 + 2) * 0.1)) * 3.4, 2));
+          glint[c] = Math.max(0, slope - 0.75) * Math.max(band, second * 0.55);
         }
 
         const depthAlpha = Math.pow(near, 1.25);

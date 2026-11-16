@@ -205,7 +205,7 @@ export function SiteHeader({
                     <a
                       href={`#${id}`}
                       aria-current={active === id ? "true" : undefined}
-                      className={`relative rounded-full px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
+                      className={`nav-link relative rounded-full px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
                         active === id ? "text-primary" : "text-ink-2 hover:text-ink"
                       }`}
                     >

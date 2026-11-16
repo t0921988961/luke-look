@@ -382,6 +382,106 @@ html[data-loops="on"] .story-scene:not([data-ready]) .story-traveler {
     top: 5.25rem;
   }
 }
+/* Five equal groups. The rule draws once when motion is on; it is never a score. */
+@keyframes skill-rule {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+@keyframes shine-pass {
+  from {
+    transform: translateX(-130%);
+  }
+  to {
+    transform: translateX(130%);
+  }
+}
+.skill-rail {
+  position: relative;
+}
+.skill-node {
+  display: none;
+}
+@media (min-width: 1280px) {
+  .skill-rail {
+    padding-top: 2.75rem;
+  }
+  .skill-rail::before {
+    content: "";
+    position: absolute;
+    top: 0.7rem;
+    left: 8%;
+    right: 8%;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--sky) 72%, var(--warm));
+    transform: scaleX(1);
+    transform-origin: left center;
+  }
+  html[data-loops="on"] .skill-rail::before {
+    animation: skill-rule 1.15s var(--ease-out) both;
+  }
+  .skill-rail > div {
+    position: relative;
+  }
+  .skill-node {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    top: calc(0.7rem - 2.75rem);
+    left: 50%;
+    width: 1.65rem;
+    height: 1.65rem;
+    translate: -50% -50%;
+    border-radius: 999px;
+    border: 1.5px solid var(--primary);
+    background: var(--bg);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--primary);
+    transition: border-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+  .skill-rail > div:hover .skill-node,
+  .skill-rail > div:focus-within .skill-node {
+    border-color: var(--warm);
+    color: var(--warm);
+  }
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.35rem;
+  left: 0.9rem;
+  height: 1px;
+  background: var(--warm);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease-out);
+}
+.nav-link:hover::after,
+.nav-link[aria-current="true"]::after {
+  transform: scaleX(1);
+}
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+.shine::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 32%, rgb(255 255 255 / 0.38) 50%, transparent 68%);
+  transform: translateX(-130%);
+}
+html[data-loops="on"] .shine:hover::after,
+html[data-loops="on"] .shine:focus-visible::after {
+  animation: shine-pass 0.75s var(--ease-out);
+}
+
 .work-more summary {
   display: list-item;
   list-style: none;
@@ -423,5 +523,13 @@ html[data-loops="on"] .story-scene:not([data-ready]) .story-traveler {
   }
   .story-traveler {
     opacity: 1 !important;
+  }
+  .skill-rail::before {
+    animation: none !important;
+    transform: scaleX(1) !important;
+  }
+  .shine::after {
+    animation: none !important;
+    transform: translateX(-130%) !important;
   }
 }

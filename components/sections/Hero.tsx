@@ -84,7 +84,7 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
             <div className="hero-late mt-7 flex flex-wrap gap-3">
               <a
                 href="#contact"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-ink shadow-[0_10px_30px_-10px_var(--primary)] transition-transform duration-300 hover:-translate-y-0.5"
+                className="shine group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-ink shadow-[0_10px_30px_-10px_var(--primary)] transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {t.ctaPrimary}
                 <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
