@@ -104,7 +104,6 @@ export type Dict = {
     noscript: string;
     backToTop: string;
     rights: string;
-    note: string;
   };
 };
 
@@ -338,7 +337,6 @@ const zh: Dict = {
     noscript: "請透過 LinkedIn 或 CakeResume 與我聯絡。",
     backToTop: "回到頂端",
     rights: "© 2026 鄭宏璋 Luke Cheng",
-    note: "設計提案 v1 · 僅供審閱",
   },
 };
 
@@ -538,7 +536,6 @@ const en: Dict = {
     noscript: "Please reach me on LinkedIn or CakeResume.",
     backToTop: "Back to top",
     rights: "© 2026 Luke Cheng (鄭宏璋)",
-    note: "Design proposal v1 · for review",
   },
 };
 
@@ -719,7 +716,6 @@ const ja: Dict = {
     noscript: "LinkedIn または CakeResume からご連絡ください。",
     backToTop: "トップへ戻る",
     rights: "© 2026 鄭宏璋 Luke Cheng",
-    note: "デザイン提案 v1 · レビュー用",
   },
 };
 
@@ -904,7 +900,6 @@ const ko: Dict = {
     noscript: "LinkedIn 또는 CakeResume로 연락해 주세요.",
     backToTop: "맨 위로",
     rights: "© 2026 Luke Cheng (鄭宏璋)",
-    note: "디자인 제안 v1 · 검토용",
   },
 };
 

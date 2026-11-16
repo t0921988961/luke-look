@@ -63,7 +63,6 @@ export function Contact() {
 
             <footer className="mt-40 flex flex-col gap-4 border-t border-white/15 pt-6 text-sm text-white/60 md:mt-56 md:flex-row md:items-center md:justify-between">
               <p>{t.contact.rights}</p>
-              <p className="text-xs">{t.contact.note}</p>
               <button
                 type="button"
                 onClick={() => scrollTo(0)}
