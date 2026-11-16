@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import {
   Geist_Mono,
-  Instrument_Serif,
   Manrope,
   Noto_Sans_JP,
   Noto_Sans_KR,
@@ -12,13 +11,6 @@ import "./globals.css";
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
 });
 
 const geistMono = Geist_Mono({
@@ -67,7 +59,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       data-theme="light"
       data-theme-pref="system"
       suppressHydrationWarning
-      className={`${manrope.variable} ${instrumentSerif.variable} ${geistMono.variable} ${notoTC.variable} ${notoJP.variable} ${notoKR.variable} antialiased`}
+      className={`${manrope.variable} ${geistMono.variable} ${notoTC.variable} ${notoJP.variable} ${notoKR.variable} antialiased`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: bootScript }} />

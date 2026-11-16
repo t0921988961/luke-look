@@ -72,7 +72,6 @@
   --color-deep: var(--deep);
   --color-deep-2: var(--deep-2);
   --font-sans: var(--font-manrope), var(--font-cjk), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-instrument), var(--font-cjk), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono), var(--font-cjk), ui-monospace, monospace;
   --breakpoint-xs: 30rem;
 }
