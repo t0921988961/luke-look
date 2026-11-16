@@ -1,27 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { LINKS } from "./content";
+import { EmailReveal } from "./EmailReveal";
 import { HorizonCanvas } from "./HorizonCanvas";
-import { ArrowUpRight, CheckIcon, CopyIcon } from "./Icons";
+import { ArrowUpRight } from "./Icons";
 import { useSite } from "./site-context";
 import { SplitWords } from "./Split";
 
 export function Contact() {
   const { t, locale, reducedMotion, scrollTo } = useSite();
-  const [copied, setCopied] = useState(false);
-  const timer = useRef<number | undefined>(undefined);
-
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(LINKS.email);
-      setCopied(true);
-      window.clearTimeout(timer.current);
-      timer.current = window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  };
 
   const links = [
     { label: "LinkedIn", href: LINKS.linkedin },
@@ -54,35 +41,13 @@ export function Contact() {
               {t.contact.body}
             </p>
 
-            <div data-reveal className="mt-12 flex flex-col gap-4 md:mt-16 md:flex-row md:items-center md:gap-6">
-              <a
-                href={`mailto:${LINKS.email}`}
-                className="group relative inline-flex min-w-0 items-center gap-3 text-[clamp(1.3rem,3.6vw,3rem)] font-bold tracking-tight break-all"
-              >
-                <span className="relative">
-                  {LINKS.email}
-                  <span className="absolute -bottom-1 left-0 h-[2px] w-full origin-right scale-x-0 bg-warm transition-transform duration-500 ease-[var(--ease-out)] group-hover:origin-left group-hover:scale-x-100" />
-                </span>
-                <ArrowUpRight className="shrink-0 text-sky transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
-              </a>
-              <button
-                type="button"
-                onClick={copy}
-                className="inline-flex h-10 w-fit items-center gap-2 rounded-full border border-white/25 px-4 text-sm text-white/85 transition-colors hover:border-white hover:text-white"
-                aria-live="polite"
-              >
-                {copied ? <CheckIcon /> : <CopyIcon />}
-                {copied ? t.contact.copied : t.contact.copy}
-              </button>
-            </div>
-
-            <ul data-reveal className="mt-10 flex flex-wrap gap-3">
+            <ul data-reveal className="mt-12 flex flex-wrap gap-3 md:mt-16">
               {links.map((l) => (
                 <li key={l.label}>
                   <a
                     href={l.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="group inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-deep transition-transform duration-300 hover:-translate-y-0.5"
                   >
                     {l.label}
@@ -91,6 +56,10 @@ export function Contact() {
                 </li>
               ))}
             </ul>
+
+            <div data-reveal className="mt-8">
+              <EmailReveal labels={t.contact} />
+            </div>
 
             <footer className="mt-40 flex flex-col gap-4 border-t border-white/15 pt-6 text-sm text-white/60 md:mt-56 md:flex-row md:items-center md:justify-between">
               <p>{t.contact.rights}</p>

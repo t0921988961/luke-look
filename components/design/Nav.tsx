@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { DICTS, LINKS, LOCALES } from "./content";
+import { DICTS, LOCALES } from "./content";
 import { DarkIcon, GlobeIcon, LightIcon, LogoMark, SystemIcon, ArrowUpRight } from "./Icons";
 import { gsap, useGSAP } from "./motion";
 import { useSite, type ThemePref } from "./site-context";
@@ -178,11 +178,16 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
         <div className="flex items-center justify-between">
           <ThemeSwitch />
           <a
-            href={`mailto:${LINKS.email}`}
+            href="#contact"
             tabIndex={open ? 0 : -1}
+            onClick={(e) => {
+              e.preventDefault();
+              onClose();
+              scrollTo("#contact");
+            }}
             className="inline-flex items-center gap-1.5 text-sm font-medium text-primary"
           >
-            Email <ArrowUpRight />
+            {t.nav.contact} <ArrowUpRight />
           </a>
         </div>
       </div>

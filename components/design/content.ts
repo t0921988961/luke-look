@@ -3,7 +3,6 @@ export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "zh-TW";
 
 export const LINKS = {
-  email: "t0921988961@gmail.com",
   linkedin: "https://www.linkedin.com/in/hung-chang-cheng-3a376ab6/",
   cake: "https://www.cake.me/s--W8ucQu2nIh5Wzl6VurfmXw--/t0921988961",
 };
@@ -97,8 +96,12 @@ export type Dict = {
     eyebrow: string;
     title: string;
     body: string;
+    reveal: string;
+    hide: string;
     copy: string;
     copied: string;
+    send: string;
+    noscript: string;
     backToTop: string;
     rights: string;
     note: string;
@@ -326,9 +329,13 @@ const zh: Dict = {
   contact: {
     eyebrow: "聯絡",
     title: "一起聊聊吧。",
-    body: "歡迎透過 Email、LinkedIn 或 CakeResume 與我聯繫。",
+    body: "歡迎透過 LinkedIn、CakeResume 或 Email 與我聯繫。",
+    reveal: "顯示 Email",
+    hide: "隱藏 Email",
     copy: "複製",
     copied: "已複製",
+    send: "寄信",
+    noscript: "請透過 LinkedIn 或 CakeResume 與我聯絡。",
     backToTop: "回到頂端",
     rights: "© 2026 鄭宏璋 Luke Cheng",
     note: "設計提案 v1 · 僅供審閱",
@@ -522,9 +529,13 @@ const en: Dict = {
   contact: {
     eyebrow: "Contact",
     title: "Let’s talk.",
-    body: "Feel free to reach me by email, LinkedIn or CakeResume.",
+    body: "Feel free to reach me on LinkedIn, CakeResume or by email.",
+    reveal: "Show email",
+    hide: "Hide email",
     copy: "Copy",
     copied: "Copied",
+    send: "Send email",
+    noscript: "Please reach me on LinkedIn or CakeResume.",
     backToTop: "Back to top",
     rights: "© 2026 Luke Cheng (鄭宏璋)",
     note: "Design proposal v1 · for review",
@@ -699,9 +710,13 @@ const ja: Dict = {
   contact: {
     eyebrow: "連絡先",
     title: "お気軽にどうぞ。",
-    body: "メール、LinkedIn、CakeResume からご連絡ください。",
+    body: "LinkedIn、CakeResume、またはメールからご連絡ください。",
+    reveal: "メールアドレスを表示",
+    hide: "メールアドレスを隠す",
     copy: "コピー",
     copied: "コピーしました",
+    send: "メールを送る",
+    noscript: "LinkedIn または CakeResume からご連絡ください。",
     backToTop: "トップへ戻る",
     rights: "© 2026 鄭宏璋 Luke Cheng",
     note: "デザイン提案 v1 · レビュー用",
@@ -880,9 +895,13 @@ const ko: Dict = {
   contact: {
     eyebrow: "연락처",
     title: "편하게 연락 주세요.",
-    body: "이메일, LinkedIn 또는 CakeResume로 연락하실 수 있습니다.",
+    body: "LinkedIn, CakeResume 또는 이메일로 연락하실 수 있습니다.",
+    reveal: "이메일 보기",
+    hide: "이메일 숨기기",
     copy: "복사",
     copied: "복사됨",
+    send: "메일 보내기",
+    noscript: "LinkedIn 또는 CakeResume로 연락해 주세요.",
     backToTop: "맨 위로",
     rights: "© 2026 Luke Cheng (鄭宏璋)",
     note: "디자인 제안 v1 · 검토용",
