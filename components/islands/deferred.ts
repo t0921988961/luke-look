@@ -131,32 +131,6 @@ function svgFrom(html: string) {
   return wrap.firstElementChild ?? wrap;
 }
 
-/** A light pull toward the pointer. Skipped for coarse pointers and when motion is off. */
-export function startMagnetic(): () => void {
-  if (!window.matchMedia("(pointer: fine)").matches) return () => {};
-  const nodes = [...document.querySelectorAll<HTMLElement>(".magnetic")];
-  if (!nodes.length) return () => {};
-  const onMove = (event: PointerEvent) => {
-    const allow = document.documentElement.dataset.loops === "on";
-    for (const node of nodes) {
-      if (!allow) {
-        node.style.transform = "";
-        continue;
-      }
-      const rect = node.getBoundingClientRect();
-      const dx = event.clientX - (rect.left + rect.width / 2);
-      const dy = event.clientY - (rect.top + rect.height / 2);
-      if (Math.hypot(dx, dy) < 110) node.style.transform = `translate(${dx * 0.16}px, ${dy * 0.22}px)`;
-      else node.style.transform = "";
-    }
-  };
-  window.addEventListener("pointermove", onMove, { passive: true });
-  return () => {
-    window.removeEventListener("pointermove", onMove);
-    for (const node of nodes) node.style.transform = "";
-  };
-}
-
 export function startApproach(): () => void {
   const stage = document.querySelector<HTMLElement>("[data-approach-stage]");
   const section = stage?.closest("section");
@@ -296,6 +270,6 @@ export function startDashboard(): () => void {
 }
 
 export function startDeferred(): () => void {
-  const stops = [startExperience(), startEmail(), startMagnetic(), startApproach(), startDashboard()];
+  const stops = [startExperience(), startEmail(), startApproach(), startDashboard()];
   return () => stops.forEach((stop) => stop());
 }

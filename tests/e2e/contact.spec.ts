@@ -34,7 +34,7 @@ test.describe("contact", () => {
 
   test("Show email reveals the +portfolio address, announces it and focuses Copy", async ({ page, context, browserName }) => {
     await page.goto("/");
-    await page.waitForFunction(() => document.documentElement.dataset.story === "on");
+    await page.waitForFunction(() => document.documentElement.dataset.ready === "on");
     const reveal = page.getByRole("button", { name: "顯示 Email" });
     await reveal.scrollIntoViewIfNeeded();
     await reveal.click();

@@ -89,17 +89,6 @@ export function Skills({ t, locale, translationNote = "" }: { t: Dict["skills"];
               </ul>
               {translationNote && <p className="pretty mt-4 max-w-md text-sm text-muted">{translationNote}</p>}
             </div>
-            <div className="md:col-span-5 md:col-start-8">
-              <h3 className="font-mono text-[11px] font-normal tracking-[0.14em] text-muted uppercase">{t.eduTitle}</h3>
-              <p className="mt-3 text-ink-2">
-                <span className="font-semibold text-ink">{t.school}</span>
-                <span aria-hidden="true" className="mx-2 text-muted">
-                  ·
-                </span>
-                <span className="sr-only">, </span>
-                {t.dept}
-              </p>
-            </div>
           </div>
         </div>
       </div>

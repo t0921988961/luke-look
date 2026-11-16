@@ -13,6 +13,11 @@ describe("skills", () => {
     expect(container.querySelectorAll(".skill-node")).toHaveLength(zh.skills.groups.length);
     expect(SKILL_GROUPS).toHaveLength(5);
     expect(container.textContent).not.toMatch(/%|熟練|proficiency|習熟度|숙련/);
-    expect(screen.getByText("華夏科技大學")).toBeInTheDocument();
+    expect(container.textContent).not.toMatch(/華夏|學歷|Education|学歴|학력|Hwa Hsia|電子工程|電子工学|전자공학/);
+    expect(screen.getByText("中文")).toBeInTheDocument();
+    for (const locale of ["zh-TW", "en", "ja", "ko"] as const) {
+      const text = JSON.stringify(getDictionary(locale));
+      expect(text).not.toMatch(/eduTitle|Hwa Hsia|華夏|学歴|학력|電子工程|電子工学|전자공학/);
+    }
   });
 });

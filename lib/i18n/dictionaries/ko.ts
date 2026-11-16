@@ -173,42 +173,6 @@ const dict = {
       },
     ],
   },
-  story: {
-    title: "걸어온 길",
-    intro: "웹 디자인에서 캠페인, 상황실, 내부 시스템, 구독형 플랫폼까지.",
-    play: "이 경력 재생",
-    pause: "일시정지",
-    replay: "다시 보기",
-    station: "이 단계로",
-    full: "전체 경력",
-    stages: [
-      {
-        mark: "佳因企業",
-        role: "웹 디자이너",
-        line: "회사 웹사이트를 모바일로 개편하고 Google Analytics, Tag Manager, Hotjar로 분석했습니다.",
-      },
-      {
-        mark: "巧禾數位",
-        role: "프론트엔드 엔지니어",
-        line: "Vue.js / Nuxt.js로 금융권 캠페인 사이트와 CSS 애니메이션, Canvas를 만들었습니다.",
-      },
-      {
-        mark: "Kinpo",
-        role: "프론트엔드 엔지니어",
-        line: "스마트 공장 상황실 시각화와 XYZprinting 웹사이트의 Angular 9 이전.",
-      },
-      {
-        mark: "坤侑科技",
-        role: "프론트엔드 엔지니어",
-        line: "감식·관제 시스템 프론트엔드. 실시간 푸시와 지도 위 위치, 경고 범위.",
-      },
-      {
-        mark: "MiTAC",
-        role: "프론트엔드 엔지니어",
-        line: "VisionMax의 메인 프론트엔드 개발자. 재직 중 플랫폼 구독 수가 약 500에서 1만 이상으로 늘었고, 두 프로젝트를 Vue 3로 업그레이드.",
-      },
-    ],
-  },
   approach: {
     title: "일하는 방식",
     intro: "팀 안에서 일을 안정적으로 진행하기 위해 지키는 것들.",
@@ -235,9 +199,6 @@ const dict = {
     title: "기술",
     intro: "매일 사용하는 프레임워크, 도구, 워크플로.",
     groups: ["프레임워크와 언어", "UI와 스타일", "다국어", "테스트와 품질", "도구와 워크플로"],
-    eduTitle: "학력",
-    school: "Hwa Hsia University of Technology (華夏科技大學)",
-    dept: "전자공학과",
     langTitle: "언어",
     langs: [
       { name: "중국어", level: "모국어" },

@@ -4,7 +4,6 @@ import { LazyHorizon } from "@/components/islands/LazyHorizon";
 import { TaipeiClock } from "@/components/islands/TaipeiClock";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { SplitWords } from "@/components/ui/SplitWords";
-import { WhoMark } from "@/components/sections/WhoMark";
 
 const TITLE_SIZE: Record<Locale, string> = {
   "zh-TW": "text-[clamp(2.6rem,7.4vw,7.4rem)] max-w-[16ch]",
@@ -44,10 +43,7 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
           </div>
         </div>
 
-        <div className="hero-fade mt-8 flex flex-col items-start gap-4 sm:mt-10 sm:flex-row sm:items-center md:mt-12">
-          <WhoMark />
-          <p className="max-w-[24rem] text-lg font-medium text-ink-2 md:text-xl">{t.greeting}</p>
-        </div>
+        <p className="hero-fade mt-8 text-lg font-medium text-ink-2 md:mt-12 md:text-xl">{t.greeting}</p>
 
         <h1 id="hero-title" data-hero-title className={`display mt-3 text-ink ${TITLE_SIZE[locale]}`}>
           {t.title.map((line, li) => (
@@ -88,14 +84,14 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
             <div className="hero-late mt-7 flex flex-wrap gap-3">
               <a
                 href="#contact"
-                className="shine magnetic group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-ink shadow-[0_10px_30px_-10px_var(--primary)] transition-transform duration-300 hover:-translate-y-0.5"
+                className="shine group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-ink shadow-[0_10px_30px_-10px_var(--primary)] transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {t.ctaPrimary}
                 <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
               <a
                 href="#experience"
-                className="magnetic inline-flex h-12 items-center gap-2 rounded-full border border-line-strong bg-surface/50 px-6 text-[15px] font-semibold text-ink backdrop-blur transition-colors hover:border-primary hover:text-primary"
+                className="inline-flex h-12 items-center gap-2 rounded-full border border-line-strong bg-surface/50 px-6 text-[15px] font-semibold text-ink backdrop-blur transition-colors hover:border-primary hover:text-primary"
               >
                 {t.ctaSecondary}
               </a>

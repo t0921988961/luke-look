@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary, getLanguageLabels } from "@/lib/i18n/get-dictionary";
-import { buildPersonJsonLd } from "@/lib/jsonld";
+import { buildStructuredData } from "@/lib/jsonld";
 import { AnalyticsLoader } from "@/components/islands/AnalyticsLoader";
 import { ConsentLoader } from "@/components/islands/ConsentLoader";
 import { SiteHeader } from "@/components/islands/SiteHeader";
@@ -30,7 +30,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       <main id="main" tabIndex={-1} className="outline-none">
         <Hero t={t.hero} locale={locale} />
         <About t={t.about} locale={locale} />
-        <Experience t={t.experience} story={t.story} locale={locale} />
+        <Experience t={t.experience} locale={locale} />
         <Work t={t.work} locale={locale} />
         <Approach t={t.approach} locale={locale} />
         <Skills t={t.skills} locale={locale} translationNote={t.translationNote} />
@@ -46,7 +46,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       />
       <MotionLoader />
       <AnalyticsLoader gaEnabled={gaEnabled} vercelEnabled={vercelEnabled} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildPersonJsonLd(locale)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildStructuredData(locale)) }} />
       <div className="grain" aria-hidden="true" />
     </>
   );

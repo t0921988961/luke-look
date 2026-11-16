@@ -173,42 +173,6 @@ const dict = {
       },
     ],
   },
-  story: {
-    title: "一路走來",
-    intro: "從網頁設計、活動網站、戰情室，到內部系統與訂閱制平台。",
-    play: "播放這段經歷",
-    pause: "暫停",
-    replay: "再看一次",
-    station: "跳到這個階段",
-    full: "完整經歷",
-    stages: [
-      {
-        mark: "佳因企業",
-        role: "網頁設計師",
-        line: "維護公司網站並改版為行動版，用 Google Analytics、Tag Manager 與 Hotjar 看訪客。",
-      },
-      {
-        mark: "巧禾數位",
-        role: "前端工程師",
-        line: "以 Vue.js / Nuxt.js 為金融客戶做 RWD 活動網站，以及 CSS 動畫與 Canvas。",
-      },
-      {
-        mark: "金寶電子",
-        role: "前端工程師",
-        line: "智慧工廠戰情室的數據視覺化，並把 XYZprinting 官網遷到 Angular 9。",
-      },
-      {
-        mark: "坤侑科技",
-        role: "前端工程師",
-        line: "鑑識系統與監控系統的前端，串接即時推播，並在地圖上顯示位置與預警範圍。",
-      },
-      {
-        mark: "神達電腦",
-        role: "前端工程師",
-        line: "VisionMax 車隊平台的主要前端。任職期間平台訂閱數從約 500 成長至 1 萬以上，並主導兩套專案升級至 Vue 3。",
-      },
-    ],
-  },
   approach: {
     title: "工作方式",
     intro: "在團隊裡，我習慣這樣把事情做穩。",
@@ -235,9 +199,6 @@ const dict = {
     title: "技能",
     intro: "日常使用的框架、工具與流程。",
     groups: ["框架與語言", "UI 與樣式", "多語系", "測試與品質", "工具與流程"],
-    eduTitle: "學歷",
-    school: "華夏科技大學",
-    dept: "電子工程系",
     langTitle: "語言",
     langs: [
       { name: "中文", level: "母語" },

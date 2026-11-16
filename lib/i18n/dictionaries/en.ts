@@ -174,42 +174,6 @@ const dict = {
       },
     ],
   },
-  story: {
-    title: "The path so far",
-    intro: "From web design and campaign sites to war rooms, internal systems and a subscription platform.",
-    play: "Play this story",
-    pause: "Pause",
-    replay: "Play again",
-    station: "Jump to this chapter",
-    full: "Full entry",
-    stages: [
-      {
-        mark: "佳因企業",
-        role: "Web Designer",
-        line: "Maintained the company site, redesigned it for mobile, and used Google Analytics, Tag Manager and Hotjar.",
-      },
-      {
-        mark: "巧禾數位",
-        role: "Front-end Engineer",
-        line: "Vue.js / Nuxt.js campaign sites for financial clients, with CSS animation and Canvas.",
-      },
-      {
-        mark: "Kinpo",
-        role: "Front-end Engineer",
-        line: "Factory war-room visualizations, and the XYZprinting site moved to Angular 9.",
-      },
-      {
-        mark: "坤侑科技",
-        role: "Front-end Engineer",
-        line: "Front end for the forensic and monitoring systems, including live updates and map locations with alert zones.",
-      },
-      {
-        mark: "MiTAC",
-        role: "Front-end Engineer",
-        line: "Main front-end developer on VisionMax. During this role, product subscriptions grew from about 500 to 10,000+, and two projects moved to Vue 3.",
-      },
-    ],
-  },
   approach: {
     title: "Approach",
     intro: "How I keep things steady inside a team.",
@@ -236,9 +200,6 @@ const dict = {
     title: "Skills",
     intro: "The frameworks, tools and workflow I use day to day.",
     groups: ["Frameworks & languages", "UI & styling", "Internationalization", "Testing & quality", "Tools & workflow"],
-    eduTitle: "Education",
-    school: "Hwa Hsia University of Technology",
-    dept: "Electronic Engineering",
     langTitle: "Languages",
     langs: [
       { name: "Mandarin", level: "Native" },

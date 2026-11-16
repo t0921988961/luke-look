@@ -82,18 +82,6 @@ export type Dict = {
     privateNote: string;
     items: { title: string; org: string; desc: string; private?: boolean; more: string[] }[];
   };
-  story: {
-    title: string;
-    intro: string;
-    play: string;
-    pause: string;
-    replay: string;
-    /** Accessible name prefix for a station button. */
-    station: string;
-    /** Link from a station to its experience entry. */
-    full: string;
-    stages: { mark: string; role: string; line: string }[];
-  };
   approach: {
     title: string;
     intro: string;
@@ -103,9 +91,6 @@ export type Dict = {
     title: string;
     intro: string;
     groups: string[];
-    eduTitle: string;
-    school: string;
-    dept: string;
     langTitle: string;
     langs: { name: string; level: string }[];
   };

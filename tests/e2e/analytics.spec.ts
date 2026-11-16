@@ -8,7 +8,7 @@ test.describe("analytics events", () => {
       localStorage.setItem("consent.v1", JSON.stringify({ analytics: "granted", ts: Date.now() }));
     });
     await page.goto("/");
-    await page.waitForFunction(() => document.documentElement.dataset.story === "on");
+    await page.waitForFunction(() => document.documentElement.dataset.ready === "on");
     await expect(page.locator("html")).toHaveAttribute("data-analytics", "on");
     await page.evaluate(() => {
       document.querySelectorAll("a").forEach((node) => node.addEventListener("click", (event) => event.preventDefault()));

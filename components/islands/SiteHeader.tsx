@@ -113,18 +113,12 @@ export function SiteHeader({
     let stop = () => {};
     let cancelled = false;
     const timer = window.setTimeout(() => {
-      Promise.all([import("@/components/islands/StoryDriver"), import("@/components/islands/deferred")]).then(
-        ([story, deferred]) => {
-          if (cancelled) return;
-          const stopStory = story.startStory();
-          const stopDeferred = deferred.startDeferred();
-          document.documentElement.dataset.story = "on";
-          stop = () => {
-            stopStory();
-            stopDeferred();
-          };
-        },
-      );
+      import("@/components/islands/deferred").then((deferred) => {
+        if (cancelled) return;
+        const stopDeferred = deferred.startDeferred();
+        document.documentElement.dataset.ready = "on";
+        stop = stopDeferred;
+      });
     }, 0);
     return () => {
       cancelled = true;

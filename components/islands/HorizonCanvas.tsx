@@ -95,7 +95,9 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
       const rect = canvas.getBoundingClientRect();
       width = Math.max(1, rect.width);
       height = Math.max(1, rect.height);
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+      const modest = window.matchMedia("(pointer: coarse)").matches || /\bFirefox\//.test(navigator.userAgent) || saveData;
+      dpr = Math.min(window.devicePixelRatio || 1, modest ? 1.5 : 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -223,14 +225,24 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
       }
     }
 
-    const loop = () => {
+    const modestFrame =
+      window.matchMedia("(pointer: coarse)").matches ||
+      /\bFirefox\//.test(navigator.userAgent) ||
+      (/apple/i.test(navigator.vendor) && !/CriOS|FxiOS|Edg\//.test(navigator.userAgent));
+    const frameMs = modestFrame ? 34 : 20;
+    let lastFrame = 0;
+    const loop = (now: number) => {
       if (!running) return;
-      draw(performance.now() - start);
+      if (now - lastFrame >= frameMs) {
+        lastFrame = now;
+        draw(now - start);
+      }
       raf = requestAnimationFrame(loop);
     };
     const play = () => {
       if (running || reducedMotion || !visible || document.hidden) return;
       running = true;
+      lastFrame = 0;
       raf = requestAnimationFrame(loop);
     };
     const pause = () => {
