@@ -34,6 +34,15 @@ describe("buildMetadata", () => {
     expect(en.openGraph).toMatchObject({ locale: "en_US", url: "/en", alternateLocale: ["zh_TW"] });
   });
 
+  it("adds the Search Console token only when it is configured", () => {
+    const previous = process.env.GOOGLE_SITE_VERIFICATION;
+    process.env.GOOGLE_SITE_VERIFICATION = "token-123";
+    expect(buildMetadata("en").verification).toEqual({ google: "token-123" });
+    delete process.env.GOOGLE_SITE_VERIFICATION;
+    expect(buildMetadata("en").verification).toBeUndefined();
+    if (previous) process.env.GOOGLE_SITE_VERIFICATION = previous;
+  });
+
   it("never exposes an email address", () => {
     for (const locale of ["zh-TW", "en", "ja", "ko"] as const) {
       expect(JSON.stringify(buildMetadata(locale))).not.toMatch(/@gmail|mailto:|t0921988961/i);

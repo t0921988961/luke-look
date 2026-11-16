@@ -107,4 +107,19 @@ export type Dict = {
     backToTop: string;
     rights: string;
   };
+  consent: {
+    title: string;
+    body: string;
+    accept: string;
+    reject: string;
+    privacy: string;
+    settings: string;
+    notrack: string;
+  };
+  privacy: {
+    title: string;
+    paragraphs: string[];
+  };
+  /** Empty on the Chinese original. */
+  translationNote: string;
 };

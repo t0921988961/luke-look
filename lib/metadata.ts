@@ -49,7 +49,9 @@ export function buildMetadata(locale: Locale): Metadata {
       url: localePath(locale),
       locale: ogLocale(locale),
       alternateLocale: INDEXABLE_LOCALES.filter((l) => l !== locale).map(ogLocale),
+      images: [{ url: `/og/${locale}.png`, width: 1200, height: 630, alt: t.meta.title }],
     },
+    verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
     twitter: {
       card: "summary",
       title: t.meta.title,

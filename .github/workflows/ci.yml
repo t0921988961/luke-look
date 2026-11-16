@@ -60,6 +60,8 @@ jobs:
       - run: npm ci
       - name: Build
         run: npm run build
+        env:
+          ANALYTICS_FORCE: "1"
       - name: E2E and accessibility
         run: npx playwright test
       - name: Upload Playwright report

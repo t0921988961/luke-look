@@ -10,6 +10,11 @@ test.describe("languages", () => {
     });
   }
 
+  test("the English page says it is translated from Chinese", async ({ page }) => {
+    await page.goto("/en");
+    await expect(page.getByText(/translated from the Chinese original/)).toHaveCount(2);
+  });
+
   test("ja and ko are noindex while unreviewed; zh-TW and en are indexable", async ({ page }) => {
     for (const { path } of LOCALE_PAGES) {
       await page.goto(path);

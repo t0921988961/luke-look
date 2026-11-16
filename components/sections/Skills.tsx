@@ -29,7 +29,7 @@ function MarqueeRow({ outline, reverse }: { outline?: boolean; reverse?: boolean
   );
 }
 
-export function Skills({ t, locale }: { t: Dict["skills"]; locale: Locale }) {
+export function Skills({ t, locale, translationNote = "" }: { t: Dict["skills"]; locale: Locale; translationNote?: string }) {
   return (
     <section
       id="skills"
@@ -84,6 +84,7 @@ export function Skills({ t, locale }: { t: Dict["skills"]; locale: Locale }) {
                   </li>
                 ))}
               </ul>
+              {translationNote && <p className="pretty mt-4 max-w-md text-sm text-muted">{translationNote}</p>}
             </div>
             <div className="md:col-span-5 md:col-start-8">
               <h3 className="font-mono text-[11px] font-normal tracking-[0.14em] text-muted uppercase">{t.eduTitle}</h3>

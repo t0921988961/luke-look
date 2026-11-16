@@ -62,7 +62,8 @@ describe("content guards", () => {
   it("uses only numbers that appear in the résumé", () => {
     // From resume_v3_zh: 7 years, ~20 modules, 4 back-end engineers, 2 designers, 9 languages,
     // ~100 test files, ~500 -> 10,000+ subscriptions; plus version numbers and the copyright year.
-    const allowed = new Set(["1", "2", "3", "4", "5", "6", "7", "9", "11", "20", "100", "500", "10,000", "2026"]);
+    // 0 is the ?notrack=0 switch, not a résumé figure.
+    const allowed = new Set(["0", "1", "2", "3", "4", "5", "6", "7", "9", "11", "20", "100", "500", "10,000", "2026"]);
     const all = [...LOCALES.flatMap((l) => strings(getDictionary(l))), ...strings({ ...site, SITE_URL: "", LINKS: {}, PERIODS: [] })];
     for (const text of all) {
       const numbers = text.replace(/i18n/g, "").match(/\d[\d,]*/g) ?? [];

@@ -5,6 +5,8 @@ type Options = {
   allowedConsoleErrors: RegExp[];
   /** Skip the end-of-test overflow check (e.g. after navigating away). */
   checkOverflow: boolean;
+  /** Most tests start with a stored refusal so the banner stays out of the way. */
+  seedConsent: boolean;
 };
 
 /**
@@ -14,14 +16,18 @@ type Options = {
 export const test = base.extend<Options & { pageGuards: void }>({
   allowedConsoleErrors: [[], { option: true }],
   checkOverflow: [true, { option: true }],
+  seedConsent: [true, { option: true }],
   pageGuards: [
-    async ({ page, allowedConsoleErrors, checkOverflow }, use) => {
+    async ({ page, allowedConsoleErrors, checkOverflow, seedConsent }, use) => {
       const problems: string[] = [];
-      await page.addInitScript(() => {
+      await page.addInitScript((seed) => {
         document.addEventListener("securitypolicyviolation", (e) => {
           console.error(`CSP violation: ${e.violatedDirective} blocked ${e.blockedURI}`);
         });
-      });
+        if (seed) {
+          localStorage.setItem("consent.v1", JSON.stringify({ analytics: "denied", ts: Date.now() }));
+        }
+      }, seedConsent);
       page.on("console", (msg) => {
         if (msg.type() !== "error") return;
         const text = msg.text();

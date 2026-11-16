@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { track } from "@/lib/analytics";
 import { getEmailAddress, getMailtoHref } from "@/lib/contact";
 import { ArrowUpRight, CheckIcon, CopyIcon, MailIcon } from "@/components/ui/Icons";
 
@@ -39,6 +40,7 @@ export function EmailReveal({ labels }: { labels: Labels }) {
       return;
     }
     focusCopy.current = true;
+    track("reveal_email", { location: "contact" });
     setAddress(getEmailAddress());
   };
 
@@ -46,6 +48,7 @@ export function EmailReveal({ labels }: { labels: Labels }) {
     if (!address) return;
     try {
       await navigator.clipboard.writeText(address);
+      track("copy_email", { location: "contact" });
       setCopied(true);
       window.clearTimeout(timer.current);
       timer.current = window.setTimeout(() => setCopied(false), 1800);
@@ -97,6 +100,9 @@ export function EmailReveal({ labels }: { labels: Labels }) {
               </button>
               <a
                 href={getMailtoHref()}
+                data-track="contact_click"
+                data-param-method="email"
+                data-param-location="contact"
                 className="group inline-flex h-11 items-center gap-2 rounded-full border border-white/25 px-4 text-sm text-white/85 transition-colors hover:border-white hover:text-white"
               >
                 {labels.send}

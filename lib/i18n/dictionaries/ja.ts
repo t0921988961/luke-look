@@ -188,6 +188,28 @@ const dict = {
     backToTop: "トップへ戻る",
     rights: "© 2026 鄭宏璋 Luke Cheng",
   },
+
+  consent: {
+    title: "Cookie",
+    body: "このサイトは Google Analytics で閲覧状況を把握します（広告はありません）。受け入れるか拒否するかを選べます。あとからページ末尾の「Cookie 設定」で変更できます。",
+    accept: "受け入れる",
+    reject: "拒否する",
+    privacy: "プライバシー",
+    settings: "Cookie 設定",
+    notrack: "トラッキング停止中",
+  },
+  privacy: {
+    title: "プライバシー",
+    paragraphs: [
+      "「受け入れる」を押したあとだけ、Google Analytics 4 で閲覧を集計します。広告はなく、データを販売しません。",
+      "Vercel Web Analytics も使っています。Cookie は使わず、端末にも保存しないため、上の選択の対象外です。",
+      "ページ末尾から、いつでも拒否に変えられます。拒否すると Google Analytics の Cookie を削除します。",
+      "Google が提供する Analytics 無効化のブラウザ拡張機能もあります。",
+      "アドレスに ?notrack=1 を付けると、この端末では両方の集計を止め、末尾に「トラッキング停止中」と出ます。?notrack=0 で戻せます。",
+      "メールアドレスは「メールアドレスを表示」を押したあとだけ表示されます。",
+    ],
+  },
+  translationNote: "このページは中国語の原文からの翻訳です。仕事の言語は中国語で、英語の技術文書と API 文書を読めます。",
 } satisfies Dict;
 
 export default dict;

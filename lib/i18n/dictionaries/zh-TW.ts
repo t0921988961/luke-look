@@ -192,6 +192,28 @@ const dict = {
     backToTop: "回到頂端",
     rights: "© 2026 鄭宏璋 Luke Cheng",
   },
+
+  consent: {
+    title: "Cookie",
+    body: "本站使用 Google Analytics 了解瀏覽情況（不含廣告）。你可以接受或拒絕，之後也能在頁尾「Cookie 設定」變更。",
+    accept: "接受",
+    reject: "拒絕",
+    privacy: "隱私說明",
+    settings: "Cookie 設定",
+    notrack: "不追蹤中",
+  },
+  privacy: {
+    title: "隱私",
+    paragraphs: [
+      "按下「接受」之後，本站才會用 Google Analytics 4 統計瀏覽，例如看了哪些段落、大致地區與語言。沒有廣告，也不出售資料。",
+      "另外使用 Vercel Web Analytics。它不使用 Cookie，也不在裝置上儲存資料，因此不受上面的選擇影響。",
+      "可以隨時在頁尾改為拒絕。拒絕後會刪除 Google Analytics 留下的 Cookie。",
+      "也可以安裝 Google 提供的 Analytics 停用瀏覽器外掛。",
+      "網址加上 ?notrack=1 會在這台裝置關閉上面兩種統計，頁尾會顯示「不追蹤中」。?notrack=0 可以恢復。",
+      "Email 只在按下「顯示 Email」之後才會出現。",
+    ],
+  },
+  translationNote: "",
 } satisfies Dict;
 
 export default dict;

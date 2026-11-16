@@ -1,8 +1,11 @@
 import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { LINKS } from "@/lib/site";
+import { CookieSettingsButton } from "@/components/islands/CookieSettingsButton";
 import { EmailReveal } from "@/components/islands/EmailReveal";
 import { MotionToggle } from "@/components/islands/MotionToggle";
+import { NoTrackDot } from "@/components/islands/NoTrackDot";
+import { PrivacyDetails } from "@/components/sections/PrivacyDetails";
 import { LazyHorizon } from "@/components/islands/LazyHorizon";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { SplitWords } from "@/components/ui/SplitWords";
@@ -17,10 +20,18 @@ export function ContactFooter({
   t,
   locale,
   motion,
+  privacy,
+  settings,
+  notrack,
+  translationNote,
 }: {
   t: Dict["contact"];
   locale: Locale;
   motion: { pause: string; play: string };
+  privacy: { title: string; paragraphs: string[] };
+  settings: string;
+  notrack: string;
+  translationNote: string;
 }) {
   return (
     <footer id="site-footer" className="px-2 pb-2 md:px-4 md:pb-4">
@@ -56,7 +67,9 @@ export function ContactFooter({
                       href={l.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      data-contact={l.method}
+                      data-track="contact_click"
+                      data-param-method={l.method}
+                      data-param-location="contact"
                       className="group inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-deep transition-transform duration-300 hover:-translate-y-0.5"
                     >
                       {l.label}
@@ -71,8 +84,16 @@ export function ContactFooter({
               </div>
             </section>
 
-            <div className="mt-40 flex flex-col gap-4 border-t border-white/15 pt-6 text-sm text-white/70 md:mt-56 md:flex-row md:items-center md:justify-between">
-              <p>{t.rights}</p>
+            {translationNote && <p className="mt-16 max-w-xl text-sm text-white/60">{translationNote}</p>}
+            <div className="mt-10">
+              <PrivacyDetails title={privacy.title} paragraphs={privacy.paragraphs} settings={settings} />
+            </div>
+            <div className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-6 text-sm text-white/70 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-2">
+                <p>{t.rights}</p>
+                <NoTrackDot label={notrack} />
+                <CookieSettingsButton label={settings} />
+              </div>
               <MotionToggle pause={motion.pause} play={motion.play} variant="text" />
               <a
                 href="#top"
