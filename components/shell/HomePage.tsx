@@ -1,7 +1,7 @@
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary, getLanguageLabels } from "@/lib/i18n/get-dictionary";
 import { SiteHeader } from "@/components/islands/SiteHeader";
-import { MotionRoot } from "@/components/motion/MotionRoot";
+import { MotionLoader } from "@/components/motion/MotionLoader";
 import { About } from "@/components/sections/About";
 import { Approach } from "@/components/sections/Approach";
 import { ContactFooter } from "@/components/sections/Contact";
@@ -29,8 +29,8 @@ export function HomePage({ locale }: { locale: Locale }) {
         <Approach t={t.approach} locale={locale} />
         <Skills t={t.skills} locale={locale} />
       </main>
-      <ContactFooter t={t.contact} locale={locale} />
-      <MotionRoot />
+      <ContactFooter t={t.contact} locale={locale} motion={t.nav} />
+      <MotionLoader />
       <div className="grain" aria-hidden="true" />
     </>
   );

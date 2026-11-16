@@ -18,7 +18,7 @@ export function ExperienceList({
   items: ExperienceItem[];
   labels: { more: string; less: string; tech: string };
 }) {
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(-1);
 
   return (
     <ol data-timeline className="relative mt-14 md:mt-20">
@@ -35,6 +35,7 @@ export function ExperienceList({
       {items.map((item, i) => {
         const isOpen = open === i;
         const panelId = `exp-panel-${i}`;
+        const [firstBullet, ...moreBullets] = item.bullets;
         return (
           <li key={i} data-reveal className="relative pl-8 md:pl-14">
             <span
@@ -85,14 +86,23 @@ export function ExperienceList({
                 </button>
               </h3>
 
+              <p className="pretty pb-2 text-sm leading-relaxed text-ink-2 md:pl-[11rem] lg:pl-[13rem]">{item.summary}</p>
+              {firstBullet && (
+                <ul className="pb-5 md:pl-[11rem] lg:pl-[13rem]">
+                  <li className="pretty relative pl-5 text-[15px] leading-relaxed text-ink-2">
+                    <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-1.5 w-1.5 rounded-full bg-sky" />
+                    {firstBullet}
+                  </li>
+                </ul>
+              )}
+
               <div id={panelId} className="expand" data-open={isOpen} inert={!isOpen}>
                 <div>
-                  <div className="grid gap-6 pb-10 md:grid-cols-[11rem_1fr] md:gap-8 lg:grid-cols-[13rem_1fr]">
-                    <p className="text-sm font-medium text-primary md:pt-1">{item.summary}</p>
-                    <div>
+                  <div className="grid gap-6 pb-8 md:grid-cols-[11rem_1fr] md:gap-8 lg:grid-cols-[13rem_1fr]">
+                    <div className="md:col-start-2">
                       <ul className="grid gap-3 lg:grid-cols-2 lg:gap-x-10">
-                        {item.bullets.map((b, bi) => (
-                          <li key={bi} className="pretty relative pl-5 text-[15px] leading-relaxed text-ink-2">
+                        {moreBullets.map((b) => (
+                          <li key={b} className="pretty relative pl-5 text-[15px] leading-relaxed text-ink-2">
                             <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-1.5 w-1.5 rounded-full bg-sky" />
                             {b}
                           </li>

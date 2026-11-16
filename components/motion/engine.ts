@@ -1,5 +1,5 @@
 import type Lenis from "lenis";
-import { onScrollLockChange } from "@/lib/motion";
+import { loopsRunning, onLoopsChange, onScrollLockChange } from "@/lib/motion";
 import { loadGsap } from "./load";
 
 type Cleanup = () => void;
@@ -121,10 +121,16 @@ export async function startMotion(options: { cursor: HTMLElement | null; dot: HT
         ease: "none",
         scrollTrigger: { trigger: hero, start: "top top", end: "bottom top", scrub: true },
       });
-      gsap
-        .timeline({ repeat: -1, repeatDelay: 0.3, delay: 1.6 })
+      const scrollLine = gsap
+        .timeline({ repeat: -1, repeatDelay: 0.3, delay: 1.6, paused: !loopsRunning() })
         .fromTo("[data-scroll-line]", { drawSVG: "0% 0%" }, { drawSVG: "0% 100%", duration: 0.7, ease: "power2.in" })
         .to("[data-scroll-line]", { drawSVG: "100% 100%", duration: 0.7, ease: "power2.out" });
+      cleanups.push(
+        onLoopsChange(() => {
+          if (loopsRunning()) scrollLine.play();
+          else scrollLine.pause();
+        }),
+      );
     }
   });
   cleanups.push(() => ctx.revert());
@@ -143,7 +149,7 @@ export async function startMotion(options: { cursor: HTMLElement | null; dot: HT
       },
     });
     const tick = (_time: number, dt: number) => {
-      if (!st.isActive) return;
+      if (!st.isActive || !loopsRunning()) return;
       boost *= 0.94;
       for (const s of state) {
         const half = s.el.scrollWidth / 2;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useMotionAllowed } from "@/lib/motion";
+import { useLoopsRunning } from "@/lib/motion";
 
 type Variant = "hero" | "contact";
 
@@ -43,7 +43,7 @@ function noise(x: number, y: number) {
 
 export function HorizonCanvas({ variant = "hero", className }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reducedMotion = !useMotionAllowed();
+  const reducedMotion = !useLoopsRunning();
 
   useEffect(() => {
     const canvas = canvasRef.current;

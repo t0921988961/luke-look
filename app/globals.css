@@ -312,6 +312,11 @@ html.theme-vt body {
   transition: none !important;
 }
 
+/* A paused visitor still sees the page; only the infinite pulses stop. */
+html[data-loops="off"] .animate-ping {
+  animation: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   @view-transition {
     navigation: none;

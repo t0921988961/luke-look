@@ -25,6 +25,8 @@ const dict = {
     dark: "ダーク",
     system: "システム",
     skip: "本文へスキップ",
+    pause: "動きを止める",
+    play: "動きを再開",
   },
   hero: {
     eyebrow: "フロントエンドエンジニア · 台北",

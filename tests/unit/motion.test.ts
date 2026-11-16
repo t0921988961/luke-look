@@ -1,6 +1,6 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { onScrollLockChange, prefersReducedMotion, setScrollLocked, useMotionAllowed } from "@/lib/motion";
+import { loopsRunning, onScrollLockChange, prefersReducedMotion, setLoopsPaused, setScrollLocked, useMotionAllowed } from "@/lib/motion";
 import { setMedia } from "./setup";
 
 describe("motion preference", () => {
@@ -15,6 +15,20 @@ describe("motion preference", () => {
     expect(result.current).toBe(true);
     act(() => setMedia("(prefers-reduced-motion: reduce)", true));
     expect(result.current).toBe(false);
+  });
+});
+
+describe("looping motion", () => {
+  it("follows reduced motion until the visitor chooses", () => {
+    expect(loopsRunning()).toBe(true);
+    setMedia("(prefers-reduced-motion: reduce)", true);
+    expect(loopsRunning()).toBe(false);
+    setLoopsPaused(false);
+    expect(loopsRunning()).toBe(true);
+    expect(localStorage.getItem("motion-loops")).toBe("playing");
+    setLoopsPaused(true);
+    expect(loopsRunning()).toBe(false);
+    expect(document.documentElement.dataset.loops).toBe("off");
   });
 });
 

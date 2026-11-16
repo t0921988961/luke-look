@@ -25,6 +25,8 @@ const dict = {
     dark: "Dark",
     system: "System",
     skip: "Skip to main content",
+    pause: "Pause motion",
+    play: "Play motion",
   },
   hero: {
     eyebrow: "Front-end engineer · Taipei",

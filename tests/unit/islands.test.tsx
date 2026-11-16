@@ -115,8 +115,9 @@ describe("ExperienceList", () => {
     const user = userEvent.setup();
     render(<ExperienceList items={items} labels={labels} />);
     const [first, second] = screen.getAllByRole("button");
-    expect(first).toHaveAttribute("aria-expanded", "true");
-    expect(second).toHaveAttribute("aria-expanded", "false");
+    expect(first).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByText(items[0].summary)).toBeInTheDocument();
+    expect(screen.getByText(items[0].bullets[0])).toBeInTheDocument();
     expect(document.getElementById("exp-panel-1")).toHaveAttribute("inert");
 
     await user.click(second);

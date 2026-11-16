@@ -7,6 +7,7 @@ import { setScrollLocked } from "@/lib/motion";
 import { SECTIONS } from "@/lib/site";
 import { ArrowUpRight, LogoMark } from "@/components/ui/Icons";
 import { LanguageLinks, LanguageSwitch, type LanguageLabels } from "./LanguageSwitch";
+import { MotionToggle } from "./MotionToggle";
 import { ThemeSwitch } from "./ThemeSwitch";
 
 type NavLabels = Dict["nav"];
@@ -79,7 +80,10 @@ function MobileMenu({
           />
         </div>
         <div className="flex items-center justify-between">
-          <ThemeSwitch labels={labels} />
+          <div className="flex items-center gap-2">
+            <ThemeSwitch labels={labels} />
+            <MotionToggle pause={labels.pause} play={labels.play} />
+          </div>
           <a href="#contact" onClick={closeForLink} className="inline-flex items-center gap-1.5 text-sm font-medium text-primary">
             {labels.contact} <ArrowUpRight />
           </a>
@@ -205,6 +209,9 @@ export function SiteHeader({
 
             <div className="flex items-center gap-2">
               <LanguageSwitch current={locale} labels={languageLabels} buttonLabel={labels.languageButton} />
+              <div className="hidden lg:block">
+                <MotionToggle pause={labels.pause} play={labels.play} />
+              </div>
               <div className="hidden lg:block">
                 <ThemeSwitch labels={labels} />
               </div>
