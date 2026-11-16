@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { configureAnalytics, ensureGtag, getAnalyticsState, grantAnalytics, track } from "@/lib/analytics";
+import { configureAnalytics, denyAnalytics, ensureGtag, getAnalyticsState, grantAnalytics, track } from "@/lib/analytics";
 import { CONSENT_DENIED } from "@/lib/consent";
 
 afterEach(() => {
@@ -50,5 +50,9 @@ describe("analytics", () => {
     expect(update[2]).toEqual({ analytics_storage: "granted" });
     expect(JSON.stringify(window.dataLayer)).not.toMatch(/ad_storage":"granted/);
     expect(getAnalyticsState().consented).toBe(false);
+    denyAnalytics();
+    const last = window.dataLayer?.at(-1) as { 1?: string; 2?: Record<string, string> };
+    expect(last[1]).toBe("update");
+    expect(last[2]?.analytics_storage).toBe("denied");
   });
 });

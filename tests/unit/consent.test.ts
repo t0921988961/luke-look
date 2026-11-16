@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
-import { CONSENT_KEY, deleteGaCookies, readConsent, writeConsent } from "@/lib/consent";
+import {
+  CONSENT_KEY,
+  consentSnapshot,
+  deleteGaCookies,
+  onConsentSettings,
+  readSettingsNonce,
+  requestConsentSettings,
+  readConsent,
+  writeConsent,
+} from "@/lib/consent";
 
 describe("consent storage", () => {
   it("returns null when nothing is stored", () => {
@@ -33,6 +42,36 @@ describe("consent storage", () => {
     deleteGaCookies();
     expect(document.cookie).not.toMatch(/_ga/);
     expect(document.cookie).toMatch(/theme=dark/);
+  });
+});
+
+describe("consent snapshot", () => {
+  it("returns the same object until storage changes, and reopens settings", () => {
+    const now = Date.now();
+    writeConsent("granted", now);
+    const first = consentSnapshot();
+    expect(consentSnapshot()).toBe(first);
+    writeConsent("denied", now);
+    expect(consentSnapshot()).not.toBe(first);
+    expect(consentSnapshot()?.analytics).toBe("denied");
+
+    const seen = vi.fn();
+    const off = onConsentSettings(seen);
+    const before = readSettingsNonce();
+    requestConsentSettings();
+    expect(readSettingsNonce()).toBe(before + 1);
+    expect(seen).toHaveBeenCalledOnce();
+    off();
+    requestConsentSettings();
+    expect(seen).toHaveBeenCalledOnce();
+  });
+
+  it("returns null when storage throws", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(consentSnapshot()).toBeNull();
+    expect(readConsent()).toBeNull();
   });
 });
 
