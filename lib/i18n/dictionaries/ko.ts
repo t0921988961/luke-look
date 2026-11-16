@@ -192,6 +192,28 @@ const dict = {
     backToTop: "맨 위로",
     rights: "© 2026 Luke Cheng (鄭宏璋)",
   },
+
+  consent: {
+    title: "쿠키",
+    body: "이 사이트는 Google Analytics로 방문 현황을 봅니다. 광고는 없습니다. 수락하거나 거부할 수 있고, 나중에 바닥글의 “쿠키 설정”에서 바꿀 수 있습니다.",
+    accept: "수락",
+    reject: "거부",
+    privacy: "개인정보",
+    settings: "쿠키 설정",
+    notrack: "추적 안 함",
+  },
+  privacy: {
+    title: "개인정보",
+    paragraphs: [
+      "수락을 누른 뒤에만 Google Analytics 4로 방문을 집계합니다. 광고가 없고, 데이터를 팔지 않습니다.",
+      "Vercel Web Analytics도 사용합니다. 쿠키를 쓰지 않고 기기에 저장하지도 않아서, 위의 선택과 별개입니다.",
+      "바닥글에서 언제든 거부로 바꿀 수 있습니다. 거부하면 Google Analytics 쿠키를 지웁니다.",
+      "Google이 제공하는 Analytics 차단 브라우저 부가 기능도 있습니다.",
+      "주소에 ?notrack=1을 붙이면 이 기기에서 두 집계를 모두 끄고, 바닥글에 “추적 안 함”이 보입니다. ?notrack=0으로 다시 켭니다.",
+      "이메일 주소는 “이메일 보기”를 누른 뒤에만 나타납니다.",
+    ],
+  },
+  translationNote: "이 페이지는 중국어 원문을 번역한 것입니다. 업무 언어는 중국어이고, 영어 기술 문서와 API 문서를 읽을 수 있습니다.",
 } satisfies Dict;
 
 export default dict;

@@ -312,6 +312,10 @@ html.theme-vt body {
   transition: none !important;
 }
 
+.consent-banner {
+  animation: hero-rise 0.45s var(--ease-out);
+}
+
 /* A paused visitor still sees the page; only the infinite pulses stop. */
 html[data-loops="off"] .animate-ping {
   animation: none;

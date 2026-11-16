@@ -1,5 +1,8 @@
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary, getLanguageLabels } from "@/lib/i18n/get-dictionary";
+import { buildPersonJsonLd } from "@/lib/jsonld";
+import { AnalyticsLoader } from "@/components/islands/AnalyticsLoader";
+import { ConsentLoader } from "@/components/islands/ConsentLoader";
 import { SiteHeader } from "@/components/islands/SiteHeader";
 import { MotionLoader } from "@/components/motion/MotionLoader";
 import { About } from "@/components/sections/About";
@@ -12,6 +15,8 @@ import { Work } from "@/components/sections/Work";
 
 export function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
+  const gaEnabled = process.env.VERCEL_ENV === "production" || process.env.ANALYTICS_FORCE === "1";
+  const vercelEnabled = process.env.VERCEL_ENV === "production";
   return (
     <>
       <a
@@ -20,6 +25,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       >
         {t.nav.skip}
       </a>
+      <ConsentLoader labels={t.consent} />
       <SiteHeader locale={locale} labels={t.nav} languageLabels={getLanguageLabels()} />
       <main id="main" tabIndex={-1} className="outline-none">
         <Hero t={t.hero} locale={locale} />
@@ -27,10 +33,20 @@ export function HomePage({ locale }: { locale: Locale }) {
         <Experience t={t.experience} locale={locale} />
         <Work t={t.work} locale={locale} />
         <Approach t={t.approach} locale={locale} />
-        <Skills t={t.skills} locale={locale} />
+        <Skills t={t.skills} locale={locale} translationNote={t.translationNote} />
       </main>
-      <ContactFooter t={t.contact} locale={locale} motion={t.nav} />
+      <ContactFooter
+        t={t.contact}
+        locale={locale}
+        motion={t.nav}
+        privacy={t.privacy}
+        settings={t.consent.settings}
+        notrack={t.consent.notrack}
+        translationNote={t.translationNote}
+      />
       <MotionLoader />
+      <AnalyticsLoader gaEnabled={gaEnabled} vercelEnabled={vercelEnabled} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildPersonJsonLd(locale)) }} />
       <div className="grain" aria-hidden="true" />
     </>
   );

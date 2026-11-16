@@ -207,6 +207,28 @@ const dict = {
     backToTop: "Back to top",
     rights: "© 2026 Luke Cheng (鄭宏璋)",
   },
+
+  consent: {
+    title: "Cookies",
+    body: "This site uses Google Analytics to understand visits. There are no ads. You can accept or refuse, and change that later from “Cookie settings” in the footer.",
+    accept: "Accept",
+    reject: "Refuse",
+    privacy: "Privacy",
+    settings: "Cookie settings",
+    notrack: "Not tracked",
+  },
+  privacy: {
+    title: "Privacy",
+    paragraphs: [
+      "Google Analytics 4 runs only after you choose Accept. It counts pages, approximate region and language. There are no ads, and nothing is sold.",
+      "Vercel Web Analytics is also on. It uses no cookies and stores nothing on your device, so the choice above does not cover it.",
+      "You can switch to Refuse at any time from the footer. Refusing deletes the Google Analytics cookies.",
+      "Google also offers a browser add-on that turns Analytics off.",
+      "Adding ?notrack=1 to the address turns both of these off on this device, and the footer shows “Not tracked”. ?notrack=0 turns them back on.",
+      "The email address appears only after you choose Show email.",
+    ],
+  },
+  translationNote: "This page is translated from the Chinese original. Luke works in Mandarin and reads English technical and API documentation.",
 } satisfies Dict;
 
 export default dict;
