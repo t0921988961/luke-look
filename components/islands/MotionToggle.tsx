@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { track } from "@/lib/analytics";
 import { loopsRunning, onLoopsChange, setLoopsPaused, useLoopsRunning } from "@/lib/motion";
 
 export function MotionToggle({
@@ -28,7 +29,11 @@ export function MotionToggle({
       type="button"
       aria-pressed={!running}
       aria-label={label}
-      onClick={() => setLoopsPaused(running)}
+      data-motion-toggle=""
+      onClick={() => {
+        track("toggle_motion", { state: running ? "paused" : "playing" });
+        setLoopsPaused(running);
+      }}
       className={
         variant === "text"
           ? "inline-flex h-10 items-center rounded-full border border-white/25 px-4 text-sm text-white/80 transition-colors hover:border-white hover:text-white"

@@ -12,6 +12,7 @@ import {
   writeThemePref,
   type ThemePref,
 } from "@/lib/theme";
+import { track } from "@/lib/analytics";
 import { DarkIcon, LightIcon, SystemIcon } from "@/components/ui/Icons";
 
 export type ThemeLabels = { theme: string; light: string; dark: string; system: string };
@@ -62,6 +63,7 @@ export function ThemeSwitch({ labels }: { labels: ThemeLabels }) {
 
   const select = (next: ThemePref, e: MouseEvent | KeyboardEvent | null) => {
     if (next === pref) return;
+    track("select_theme", { preference: next, resolved: resolveTheme(next, systemPrefersDark()) });
     const origin =
       e && "clientX" in e && e.clientX
         ? { x: e.clientX, y: e.clientY }

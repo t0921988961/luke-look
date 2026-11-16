@@ -3,12 +3,14 @@
 import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
 import { hrefLang, htmlLang, LOCALES, localeCode, localePath, type Locale } from "@/lib/i18n/config";
 import { rememberLocale } from "@/lib/i18n/remember";
+import { track } from "@/lib/analytics";
 import { GlobeIcon } from "@/components/ui/Icons";
 
 export type LanguageLabels = Record<Locale, { label: string; short: string }>;
 
 /** Remembers the choice and keeps the current section; modified clicks open normally. */
-export function followLanguageLink(e: MouseEvent<HTMLAnchorElement>, to: Locale) {
+export function followLanguageLink(e: MouseEvent<HTMLAnchorElement>, from: Locale, to: Locale) {
+  if (from !== to) track("select_language", { from, to });
   rememberLocale(to);
   if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   const hash = window.location.hash;
@@ -42,7 +44,7 @@ export function LanguageLinks({
               lang={htmlLang(l)}
               aria-current={active ? "page" : undefined}
               tabIndex={tabIndex}
-              onClick={(e) => followLanguageLink(e, l)}
+              onClick={(e) => followLanguageLink(e, current, l)}
               className={itemClassName(active)}
             >
               <span>{labels[l].label}</span>
