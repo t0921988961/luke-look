@@ -7,6 +7,17 @@ const nextConfig: NextConfig = {
   experimental: {
     globalNotFound: true,
   },
+  async redirects() {
+    return [
+      {
+        // An explicit language choice wins on `/`; evaluated by the router, so the page stays static.
+        source: "/",
+        has: [{ type: "cookie", key: "NEXT_LOCALE", value: "(?<locale>en|ja|ko)" }],
+        destination: "/:locale",
+        permanent: false,
+      },
+    ];
+  },
   turbopack: {
     rules: {
       "*.css": {
