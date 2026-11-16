@@ -7,14 +7,16 @@ test.describe("motion", () => {
   test("pause stops looping motion and is remembered", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/");
-    const pause = page.getByRole("button", { name: "暫停動態" }).first();
+    const footer = page.locator("#site-footer");
+    const pause = footer.getByRole("button", { name: "暫停動態" });
+    await pause.scrollIntoViewIfNeeded();
     await pause.click();
-    await expect(pause).toHaveAttribute("aria-pressed", "true");
+    await expect(footer.getByRole("button", { name: "播放動態" })).toHaveAttribute("aria-pressed", "true");
     expect(await page.evaluate(() => document.documentElement.dataset.loops)).toBe("off");
     await page.reload();
-    await expect(page.getByRole("button", { name: "播放動態" }).first()).toHaveAttribute("aria-pressed", "true");
-    await page.getByRole("button", { name: "播放動態" }).first().click();
-    await expect(page.getByRole("button", { name: "暫停動態" }).first()).toBeVisible();
+    await expect(footer.getByRole("button", { name: "播放動態" })).toHaveAttribute("aria-pressed", "true");
+    await footer.getByRole("button", { name: "播放動態" }).click();
+    await expect(footer.getByRole("button", { name: "暫停動態" })).toBeVisible();
   });
 
   test("with motion on, every reveal ends visible after scrolling", async ({ page }) => {
