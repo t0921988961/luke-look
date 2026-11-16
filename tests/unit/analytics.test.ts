@@ -1,11 +1,20 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { configureAnalytics, denyAnalytics, ensureGtag, getAnalyticsState, grantAnalytics, track } from "@/lib/analytics";
+import { configureAnalytics, denyAnalytics, ensureGtag, getAnalyticsState, grantAnalytics, track, vercelAnalyticsEnabled } from "@/lib/analytics";
 import { CONSENT_DENIED } from "@/lib/consent";
 
 afterEach(() => {
   configureAnalytics({ enabled: false, consented: false, optedOut: false });
   delete window.gtag;
   delete window.dataLayer;
+});
+
+describe("Vercel Web Analytics", () => {
+  it("loads only on Vercel production, where the insights script exists", () => {
+    expect(vercelAnalyticsEnabled({ VERCEL: "1", VERCEL_ENV: "production" })).toBe(true);
+    expect(vercelAnalyticsEnabled({ VERCEL_ENV: "production" })).toBe(false);
+    expect(vercelAnalyticsEnabled({ VERCEL: "1", VERCEL_ENV: "preview" })).toBe(false);
+    expect(vercelAnalyticsEnabled({})).toBe(false);
+  });
 });
 
 describe("analytics", () => {

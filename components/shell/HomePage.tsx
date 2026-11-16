@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n/config";
 import { getDictionary, getLanguageLabels } from "@/lib/i18n/get-dictionary";
+import { vercelAnalyticsEnabled } from "@/lib/analytics";
 import { buildStructuredData } from "@/lib/jsonld";
 import { AnalyticsLoader } from "@/components/islands/AnalyticsLoader";
 import { ConsentLoader } from "@/components/islands/ConsentLoader";
@@ -16,7 +17,7 @@ import { Work } from "@/components/sections/Work";
 export function HomePage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale);
   const gaEnabled = process.env.VERCEL_ENV === "production" || process.env.ANALYTICS_FORCE === "1";
-  const vercelEnabled = process.env.VERCEL_ENV === "production";
+  const vercelEnabled = vercelAnalyticsEnabled();
   return (
     <>
       <a
@@ -46,7 +47,10 @@ export function HomePage({ locale }: { locale: Locale }) {
       />
       <MotionLoader />
       <AnalyticsLoader gaEnabled={gaEnabled} vercelEnabled={vercelEnabled} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildStructuredData(locale)) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(buildStructuredData(locale)).replace(/</g, "\\u003c") }}
+      />
       <div className="grain" aria-hidden="true" />
     </>
   );
