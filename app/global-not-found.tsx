@@ -1,7 +1,8 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { fontClassName } from "@/lib/fonts";
+import tcBold from "../assets/fonts/NotoSansTC-700.woff2";
+import { latinClassName } from "@/lib/fonts/latin";
 import { BOOT_SCRIPT } from "@/lib/theme";
 import { ArrowUpRight, LogoMark } from "@/components/ui/Icons";
 
@@ -11,9 +12,10 @@ export const metadata: Metadata = {
 
 export default function GlobalNotFound() {
   return (
-    <html lang="zh-Hant-TW" data-theme="light" suppressHydrationWarning className={`${fontClassName("zh-TW")} antialiased`}>
+    <html lang="zh-Hant-TW" data-theme="light" suppressHydrationWarning className={`${latinClassName} antialiased`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
+        <link rel="preload" href={tcBold} as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>
         <main className="relative isolate flex min-h-[100svh] flex-col overflow-hidden px-5 py-8 md:px-10 xl:px-16">
