@@ -62,6 +62,9 @@ export default function Home() {
             <p className="mt-4 max-w-md text-base leading-relaxed text-muted">
               Portfolio coming soon.
             </p>
+            <p className="mt-3 text-sm tracking-wide text-muted">
+              Auto-deploy test · 2026-11-16
+            </p>
           </div>
         </section>
 
