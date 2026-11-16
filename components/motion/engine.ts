@@ -153,8 +153,16 @@ export async function startMotion(options: { cursor: HTMLElement | null; dot: HT
   const skills = document.querySelector<HTMLElement>("[data-marquee-host]");
   const tracks = gsap.utils.toArray<HTMLElement>("[data-marquee]");
   if (skills && tracks.length) {
-    const state = tracks.map((el) => ({ el, x: 0, dir: Number(el.dataset.dir) || 1 }));
+    const state = tracks.map((el) => ({ el, x: 0, dir: Number(el.dataset.dir) || 1, half: 0 }));
     let boost = 0;
+    // scrollWidth after a transform write forces layout. Measure when the size changes.
+    const measureTracks = () => {
+      for (const s of state) s.half = s.el.scrollWidth / 2;
+    };
+    measureTracks();
+    const trackObserver = new ResizeObserver(measureTracks);
+    for (const s of state) trackObserver.observe(s.el);
+    document.fonts?.addEventListener("loadingdone", measureTracks);
     const st = ScrollTrigger.create({
       trigger: skills,
       start: "top bottom",
@@ -167,7 +175,8 @@ export async function startMotion(options: { cursor: HTMLElement | null; dot: HT
       if (!st.isActive || !loopsRunning()) return;
       boost *= 0.94;
       for (const s of state) {
-        const half = s.el.scrollWidth / 2;
+        const half = s.half;
+        if (half <= 0) continue;
         s.x -= 0.045 * dt * (1 + Math.abs(boost)) * s.dir * (boost < -0.5 ? -1 : 1);
         if (s.x <= -half) s.x += half;
         if (s.x > 0) s.x -= half;
@@ -178,6 +187,8 @@ export async function startMotion(options: { cursor: HTMLElement | null; dot: HT
     cleanups.push(() => {
       gsap.ticker.remove(tick);
       st.kill();
+      trackObserver.disconnect();
+      document.fonts?.removeEventListener("loadingdone", measureTracks);
       state.forEach((s) => (s.el.style.transform = ""));
     });
   }

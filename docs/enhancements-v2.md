@@ -50,6 +50,8 @@ No further decoration. The horizon canvas caps its frame rate on phones, Firefox
 
 One layout bug was fixed after that: the Japanese featured title `VisionMax フリート管理プラットフォーム` was forced onto an unbreakable line, so on a phone it was clipped by the card and on a desktop it ran over the dashboard. It now breaks before プラットフォーム. The sources for that choice, and for the other non-obvious decisions on this branch, are in `docs/review-2026-11.md`.
 
+A clean mobile Lighthouse pass is recorded in that same note. Next's redundant polyfill is no longer in the browser bundle (first-load JavaScript 144.3 KB to 143.9 KB). A deep link no longer animates the header border and shadow while the page is loading. Inlining the stylesheet was measured and left off: it removed a 150 ms render-blocking request and made LCP about 200 ms slower on simulated Slow 4G. The underline still draws with `stroke-dashoffset`.
+
 ## Release checklist
 
 - [ ] Read the preview in zh and en, light and dark, phone and desktop. The hero should be the greeting and the title, with no LUKE drawing. Experience should be the list, with no route above it.

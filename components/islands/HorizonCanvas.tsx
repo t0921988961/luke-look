@@ -60,10 +60,18 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
     const start = performance.now();
     // The hero horizon rises as its section scrolls away.
     const scrollHost = variant === "hero" ? canvas.closest<HTMLElement>("[data-hero]") : null;
+    // Document position is stable while scrolling. Reading it every frame forces layout.
+    let hostTop = 0;
+    let hostHeight = 1;
+    const measureHost = () => {
+      if (!scrollHost) return;
+      const rect = scrollHost.getBoundingClientRect();
+      hostTop = rect.top + window.scrollY;
+      hostHeight = Math.max(1, rect.height);
+    };
     const scrollProgress = () => {
       if (!scrollHost) return 0;
-      const rect = scrollHost.getBoundingClientRect();
-      return Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
+      return Math.min(1, Math.max(0, (window.scrollY - hostTop) / hostHeight));
     };
 
     const pointer = { x: -9999, y: -9999, tx: -9999, ty: -9999, strength: 0, target: 0 };
@@ -101,6 +109,7 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      measureHost();
       if (!running) draw(reducedMotion ? 4 : performance.now() - start);
     };
 

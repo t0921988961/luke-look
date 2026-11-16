@@ -70,6 +70,22 @@ describe("hero underline", () => {
   });
 });
 
+describe("layout reads", () => {
+  it("does not read marquee width inside the animation tick", () => {
+    const source = readFileSync("components/motion/engine.ts", "utf8");
+    const tick = source.slice(source.indexOf("const tick"), source.indexOf("gsap.ticker.add"));
+    expect(tick).not.toContain("scrollWidth");
+    expect(source).toContain("new ResizeObserver(measureTracks)");
+  });
+
+  it("measures the hero once per resize instead of every canvas frame", () => {
+    const source = readFileSync("components/islands/HorizonCanvas.tsx", "utf8");
+    const progress = source.slice(source.indexOf("const scrollProgress"), source.indexOf("const pointer"));
+    expect(progress).not.toContain("getBoundingClientRect");
+    expect(source).toContain("measureHost()");
+  });
+});
+
 describe("text sizing", () => {
   it("sets the standard property as well as the WebKit prefix", () => {
     const css = readFileSync("app/globals.css", "utf8");

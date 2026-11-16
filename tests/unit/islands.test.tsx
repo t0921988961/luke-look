@@ -120,6 +120,12 @@ describe("SiteHeader mobile menu", () => {
     expect(toggle).toHaveFocus();
   });
 
+  it("does not animate the header border until the first scroll position is applied", () => {
+    renderPage();
+    const bar = document.querySelector("header .rounded-full");
+    expect(bar?.className ?? "").not.toContain("transition-[background-color,border-color,box-shadow]");
+  });
+
   it("closes when a section link is chosen", async () => {
     const user = userEvent.setup();
     renderPage();

@@ -5,7 +5,6 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { setScrollLocked } from "@/lib/motion";
 import { SECTIONS } from "@/lib/site";
-import { HanRun } from "@/components/ui/HanRun";
 import { ArrowUpRight, LogoMark } from "@/components/ui/Icons";
 import { LanguageLinks, LanguageSwitch, type LanguageLabels } from "./LanguageSwitch";
 import { MotionToggle } from "./MotionToggle";
@@ -104,6 +103,10 @@ export function SiteHeader({
   languageLabels: LanguageLabels;
 }) {
   const [scrolled, setScrolled] = useState(false);
+  // The glass border and shadow are not compositor properties. Hold the
+  // transition off until the first scroll position is applied, so a deep link
+  // snaps to the finished bar instead of animating it during load.
+  const [chromeMotion, setChromeMotion] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -139,8 +142,12 @@ export function SiteHeader({
       lastY.current = y;
     };
     onScroll();
+    const frame = requestAnimationFrame(() => setChromeMotion(true));
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -188,7 +195,9 @@ export function SiteHeader({
       >
         <div className="mx-auto max-w-[1440px] px-3 pt-3 md:px-6">
           <div
-            className={`flex h-14 items-center justify-between gap-4 rounded-full pr-2 pl-3 transition-[background-color,border-color,box-shadow] duration-500 md:h-16 md:pr-3 md:pl-4 ${
+            className={`flex h-14 items-center justify-between gap-4 rounded-full pr-2 pl-3 md:h-16 md:pr-3 md:pl-4 ${
+              chromeMotion ? "transition-[background-color,border-color,box-shadow] duration-500" : ""
+            } ${
               scrolled && !menuOpen
                 ? "border border-line bg-bg/75 shadow-[var(--shadow)] backdrop-blur-xl"
                 : "border border-transparent"
