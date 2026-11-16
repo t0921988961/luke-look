@@ -19,7 +19,7 @@ export function Experience({ t, locale }: { t: Dict["experience"]; locale: Local
     >
       <div className="mx-auto max-w-[1312px]">
         <SectionHead index="02" id="experience-title" title={t.title} intro={t.intro} locale={locale} />
-        <ExperienceList items={items} labels={{ more: t.more, less: t.less, tech: t.tech }} />
+        <ExperienceList items={items} labels={{ more: t.more, less: t.less, tech: t.tech }} locale={locale} />
       </div>
     </section>
   );

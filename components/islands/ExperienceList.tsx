@@ -1,3 +1,6 @@
+import type { Locale } from "@/lib/i18n/config";
+import { HanRun } from "@/components/ui/HanRun";
+
 export type ExperienceItem = {
   company: string;
   role: string;
@@ -11,9 +14,11 @@ export type ExperienceItem = {
 export function ExperienceList({
   items,
   labels,
+  locale,
 }: {
   items: ExperienceItem[];
   labels: { more: string; less: string; tech: string };
+  locale: Locale;
 }) {
   return (
     <ol data-timeline className="relative mt-14 md:mt-20">
@@ -57,7 +62,7 @@ export function ExperienceList({
                   </span>
                   <span className="min-w-0">
                     <span className="exp-name block text-[clamp(1.35rem,2.6vw,2.25rem)] leading-tight font-bold tracking-tight text-ink transition-colors duration-300 group-hover:text-primary">
-                      {item.company}
+                      <HanRun text={item.company} locale={locale} />
                     </span>
                     <span className="mt-1 block text-sm text-muted lg:hidden">{item.role}</span>
                   </span>

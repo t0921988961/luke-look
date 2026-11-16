@@ -3,6 +3,7 @@ import type { Dict } from "@/lib/i18n/types";
 import { LazyHorizon } from "@/components/islands/LazyHorizon";
 import { TaipeiClock } from "@/components/islands/TaipeiClock";
 import { ArrowUpRight } from "@/components/ui/Icons";
+import { HanRun } from "@/components/ui/HanRun";
 import { SplitWords } from "@/components/ui/SplitWords";
 
 const TITLE_SIZE: Record<Locale, string> = {
@@ -100,7 +101,9 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
           <dl className="hero-late grid content-start gap-4 text-sm md:col-span-4 md:col-start-9">
             <div className="border-t border-line-strong pt-3">
               <dt className="font-mono text-[11px] tracking-[0.14em] text-muted uppercase">{t.nowLabel}</dt>
-              <dd className="mt-1 font-medium text-ink">{t.now}</dd>
+              <dd className="mt-1 font-medium text-ink">
+                <HanRun text={t.now} locale={locale} />
+              </dd>
             </div>
             <div className="border-t border-line-strong pt-3">
               <dt className="font-mono text-[11px] tracking-[0.14em] text-muted uppercase">{t.stackLabel}</dt>

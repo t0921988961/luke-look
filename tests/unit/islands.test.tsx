@@ -70,7 +70,7 @@ describe("ExperienceList", () => {
 
   it("opens the first role and toggles one panel at a time", async () => {
     const user = userEvent.setup();
-    render(<ExperienceList items={items} labels={labels} />);
+    render(<ExperienceList items={items} labels={labels} locale="zh-TW" />);
     startExperience();
     const [first, second] = screen.getAllByRole("button");
     expect(first).toHaveAttribute("aria-expanded", "false");

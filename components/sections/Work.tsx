@@ -5,6 +5,7 @@ import { FEATURED_TECH, WORK_TECH } from "@/lib/site";
 import { DashboardMock } from "@/components/islands/DashboardMock";
 import { IslandBoundary } from "@/components/islands/IslandBoundary";
 import { CheckIcon, LockIcon, ProjectArt } from "@/components/ui/Icons";
+import { HanRun } from "@/components/ui/HanRun";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 const CARD_SPANS = ["xl:col-span-2", "xl:col-span-2", "xl:col-span-2", "xl:col-span-3", "md:col-span-2 xl:col-span-3"];
@@ -72,7 +73,9 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
             <h3 id="work-featured-title" className="display mt-6 text-[clamp(1.9rem,3.6vw,3.25rem)] [word-break:keep-all] text-ink">
               {withBreaks(t.featured.title)}
             </h3>
-            <p className="mt-2 text-sm font-medium text-primary">{t.featured.org}</p>
+            <p className="mt-2 text-sm font-medium text-primary">
+              <HanRun text={t.featured.org} locale={locale} />
+            </p>
             <p className="pretty mt-5 text-base leading-relaxed text-ink-2">{t.featured.desc}</p>
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               {t.featured.facts.map((f) => (
@@ -129,7 +132,9 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
                   <ProjectArt kind={i} />
                 </div>
                 <h3 className="mt-5 text-xl leading-snug font-bold tracking-tight text-ink md:text-[1.4rem]">{item.title}</h3>
-                <p className="mt-1 text-sm font-medium text-primary">{item.org}</p>
+                <p className="mt-1 text-sm font-medium text-primary">
+                  <HanRun text={item.org} locale={locale} />
+                </p>
                 <p className="pretty mt-3 text-[15px] leading-relaxed text-ink-2">{item.desc}</p>
                 <ul className="mt-auto flex flex-wrap gap-1.5 pt-6">
                   {WORK_TECH[i].map((tech) => (

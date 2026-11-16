@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { setScrollLocked } from "@/lib/motion";
 import { SECTIONS } from "@/lib/site";
+import { HanRun } from "@/components/ui/HanRun";
 import { ArrowUpRight, LogoMark } from "@/components/ui/Icons";
 import { LanguageLinks, LanguageSwitch, type LanguageLabels } from "./LanguageSwitch";
 import { MotionToggle } from "./MotionToggle";
@@ -197,7 +198,12 @@ export function SiteHeader({
               <LogoMark animated className="h-8 w-8 transition-transform duration-500 group-hover:-rotate-6" />
               <span className="text-[15px] leading-none font-bold tracking-tight max-xs:sr-only">
                 Luke Cheng
-                <span className="ml-1.5 font-normal text-muted">鄭宏璋</span>
+                <span
+                  className={locale === "zh-TW" ? "ml-1.5 font-normal text-muted" : "han-name ml-1.5 font-normal text-muted"}
+                  lang={locale === "zh-TW" ? undefined : "zh-Hant-TW"}
+                >
+                  鄭宏璋
+                </span>
               </span>
             </a>
 

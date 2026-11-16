@@ -151,6 +151,13 @@ body {
   line-height: 1.6;
 }
 
+/* Same named faces as the page. Generics such as system-ui follow `lang`, so they are left off. */
+.han-name {
+  font-family: var(--font-manrope), var(--font-cjk), sans-serif;
+  font-feature-settings: "locl" 0, "palt" 0;
+  font-language-override: normal;
+}
+
 .display {
   font-weight: 800;
   letter-spacing: -0.035em;
