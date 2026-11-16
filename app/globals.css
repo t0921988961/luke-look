@@ -273,8 +273,14 @@ body {
 .js-motion .hero-late {
   animation: hero-rise 1.1s var(--ease-out) 0.75s both;
 }
-/* Do not dash this stroke. A single dasharray length is repeated as the gap,
-   and with pathLength="1" that gap opens a hole in the middle of the curve. */
+/* pathLength is 1, so a dash of 1 is also a gap of 1 and that gap opens a hole
+   in the stretched curve. A dash of 2 is longer than the path, so the repeated
+   gap starts past the end and the line stays one piece while it draws. */
+html.js-motion[data-loops="on"] .hero-underline {
+  stroke-dasharray: 2;
+  stroke-dashoffset: 2;
+  animation: hero-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) 0.95s forwards;
+}
 .js-motion .hero-canvas {
   animation: fade-in 2s ease-out both;
 }

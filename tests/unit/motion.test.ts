@@ -50,9 +50,12 @@ describe("scroll lock", () => {
 });
 
 describe("hero underline", () => {
-  it("does not repeat a single dash length as a gap", () => {
+  it("draws with a dash longer than the path, and only while motion is allowed", () => {
     const css = readFileSync("app/globals.css", "utf8");
-    const rule = css.match(/\.js-motion \.hero-underline\s*\{[^}]*\}/);
-    expect(rule).toBeNull();
+    const rule = css.match(/html\.js-motion\[data-loops="on"\] \.hero-underline\s*\{[^}]*\}/);
+    expect(rule?.[0]).toMatch(/stroke-dasharray:\s*2;/);
+    expect(rule?.[0]).toMatch(/stroke-dashoffset:\s*2;/);
+    expect(rule?.[0]).toMatch(/hero-draw 1\.1s cubic-bezier\(0\.65, 0, 0\.35, 1\) 0\.95s forwards/);
+    expect(css).not.toMatch(/\.hero-underline\s*\{[^}]*stroke-dasharray:\s*1\s*;/);
   });
 });
