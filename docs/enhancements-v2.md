@@ -48,6 +48,8 @@ Round 3 also drew a LUKE signature (blue, apricot, coral) beside the greeting an
 
 No further decoration. The horizon canvas caps its frame rate on phones, Firefox and Safari, and caps its pixel density on phones, Firefox and data-saver. Lenis stays on Chromium (including Edge) and is left off where it fights the browser’s own scrolling. `prefers-reduced-transparency` drops the backdrop blur. JSON-LD is a Person, WebSite and ProfilePage graph. `/llms.txt` is a résumé summary with no email. Training crawlers stay blocked; search and assistant crawlers stay allowed. Speculation Rules were not added: on this site they prefetch `/` before the language cookie updates, and WebKit logs an error for prefetch on HTTP. Playwright also runs the suite in Firefox.
 
+One layout bug was fixed after that: the Japanese featured title `VisionMax フリート管理プラットフォーム` was forced onto an unbreakable line, so on a phone it was clipped by the card and on a desktop it ran over the dashboard. It now breaks before プラットフォーム. The sources for that choice, and for the other non-obvious decisions on this branch, are in `docs/review-2026-11.md`.
+
 ## Release checklist
 
 - [ ] Read the preview in zh and en, light and dark, phone and desktop. The hero should be the greeting and the title, with no LUKE drawing. Experience should be the list, with no route above it.
