@@ -273,11 +273,8 @@ body {
 .js-motion .hero-late {
   animation: hero-rise 1.1s var(--ease-out) 0.75s both;
 }
-.js-motion .hero-underline {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  animation: hero-draw 1.1s cubic-bezier(0.65, 0, 0.35, 1) 0.95s forwards;
-}
+/* Do not dash this stroke. A single dasharray length is repeated as the gap,
+   and with pathLength="1" that gap opens a hole in the middle of the curve. */
 .js-motion .hero-canvas {
   animation: fade-in 2s ease-out both;
 }

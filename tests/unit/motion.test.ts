@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { loopsRunning, onScrollLockChange, prefersReducedMotion, setLoopsPaused, setScrollLocked, useMotionAllowed } from "@/lib/motion";
@@ -45,5 +46,13 @@ describe("scroll lock", () => {
     off();
     setScrollLocked(true);
     expect(cb).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("hero underline", () => {
+  it("does not repeat a single dash length as a gap", () => {
+    const css = readFileSync("app/globals.css", "utf8");
+    const rule = css.match(/\.js-motion \.hero-underline\s*\{[^}]*\}/);
+    expect(rule).toBeNull();
   });
 });
