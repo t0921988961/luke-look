@@ -64,6 +64,8 @@ jobs:
           ANALYTICS_FORCE: "1"
       - name: E2E and accessibility
         run: npx playwright test
+      - name: Visual regression (17 snapshots)
+        run: npx playwright test -c playwright.vrt.config.ts --grep @pr
       - name: Upload Playwright report
         if: ${{ failure() }}
         uses: actions/upload-artifact@v4
