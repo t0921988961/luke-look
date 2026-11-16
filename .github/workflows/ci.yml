@@ -64,6 +64,11 @@ jobs:
           ANALYTICS_FORCE: "1"
       - name: E2E and accessibility
         run: npx playwright test
+        env:
+          # The job runs as root inside the Playwright image, while HOME is
+          # /github/home (owned by pwuser). Firefox refuses to start that way.
+          HOME: /root
+          MOZ_DISABLE_CONTENT_SANDBOX: "1"
       - name: Visual regression (17 snapshots)
         run: npx playwright test -c playwright.vrt.config.ts --grep @pr
       - name: Upload Playwright report
