@@ -30,7 +30,8 @@ export function MotionRoot() {
       cancelIdleCallback?: (id: number) => void;
     };
     const idle = win.requestIdleCallback?.(run, { timeout: 4000 });
-    const timer = idle === undefined ? window.setTimeout(run, 1600) : undefined;
+    // Safari has no requestIdleCallback. Use the same 4s budget as the idle timeout.
+    const timer = idle === undefined ? window.setTimeout(run, 4000) : undefined;
     return () => {
       cancelled = true;
       if (idle !== undefined) win.cancelIdleCallback?.(idle);

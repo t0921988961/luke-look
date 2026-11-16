@@ -21,7 +21,9 @@ export function LazyHorizon({ variant = "hero", className }: { variant?: "hero" 
       const id = win.requestIdleCallback(() => setReady(true), { timeout: 4000 });
       return () => win.cancelIdleCallback?.(id);
     }
-    const id = window.setTimeout(() => setReady(true), 1600);
+    // Safari has no requestIdleCallback. Match the 4s budget used above so the
+    // canvas does not start during the first moments of scrolling.
+    const id = window.setTimeout(() => setReady(true), 4000);
     return () => window.clearTimeout(id);
   }, []);
 
