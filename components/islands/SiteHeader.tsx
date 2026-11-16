@@ -73,7 +73,7 @@ function MobileMenu({
             className="flex flex-wrap gap-2"
             itemClassName={(active) =>
               `flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors ${
-                active ? "border-primary bg-primary text-primary-ink [&_span+span]:text-primary-ink/70" : "border-line text-ink"
+                active ? "border-primary bg-primary text-primary-ink [&_span+span]:text-primary-ink" : "border-line text-ink"
               }`
             }
           />
@@ -108,9 +108,11 @@ export function SiteHeader({
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
+      const delta = y - lastY.current;
       setScrolled(y > 24);
-      setHidden(y > 480 && y > lastY.current + 4);
-      if (y < lastY.current - 4) setHidden(false);
+      // Jumps (anchor links, restored positions) keep the header; only reading downwards hides it.
+      if (y > 480 && delta > 4 && delta < 240) setHidden(true);
+      else if (delta < -4 || y <= 480) setHidden(false);
       lastY.current = y;
     };
     onScroll();
