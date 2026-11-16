@@ -29,7 +29,17 @@ test.describe("accessibility (axe)", () => {
     await scrollThrough(page);
     // The hero fades out on purpose while scrolled past; audit it at rest.
     await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(2500);
+    // The last reveal batch is staggered, so a fixed wait can still catch it mid-fade on WebKit.
+    await expect.poll(async () =>
+      page.locator("[data-reveal]").evaluateAll((els) =>
+        els.every((el) => {
+          const style = getComputedStyle(el);
+          const transform = style.transform;
+          const parked = transform === "none" || transform.startsWith("matrix(1, 0, 0, 1");
+          return Number(style.opacity) >= 0.99 && parked;
+        }),
+      ),
+    ).toBe(true);
     await audit(page, "motion on");
   });
 
