@@ -1,6 +1,6 @@
 # Implementation plan: from `/design` prototype to the real site
 
-Status: **plan for final approval, revision 3. Luke's decisions D1–D6 are applied. No production code yet.** Luke gives the final approval before any implementation starts, including the small pre-merge commit for M0.
+Status: **approved (revision 3), in implementation.** Revision 4 changes only the delivery: milestones merge into the integration branch `cursor/develop-0acd`, and `main` receives a single release merge once every page is finished and every check passes (§12).
 
 Inputs:
 - `docs/design.md`: the approved direction 「藍上的光」
@@ -395,7 +395,7 @@ This is not legal advice; it is a proportionate, standard setup for a personal p
 
 ### 10.1 Deployments
 
-- Merging into `main` deploys production. Every PR gets a preview behind **Vercel Deployment Protection**, so viewers must be signed in to Vercel.
+- Merging into `main` deploys production. **`main` stays on the starter page until the single release merge** (§12). Every branch and PR, including the integration branch `cursor/develop-0acd`, gets a preview behind **Vercel Deployment Protection**, so viewers must be signed in to Vercel.
 - CI tests a local `next build && next start`, so no protection-bypass secret is needed.
 - Environment variables: `NEXT_PUBLIC_SITE_URL`, `GOOGLE_SITE_VERIFICATION`. `VERCEL_ENV` is provided by Vercel.
 
@@ -678,17 +678,22 @@ Tier 2 is not a required check, so a stale Tier 2 baseline never blocks a normal
 
 ---
 
-## 12. Order of work: five milestones, `main` always deployable
+## 12. Order of work: milestones on an integration branch, one release to `main`
 
-Each milestone is **its own PR**, merged only when CI is green, so production improves step by step and any step can be reverted alone.
+Luke's delivery rule (revision 4): **production does not change until the whole site is finished and every check passes.**
+
+- **Integration branch `cursor/develop-0acd`.** It starts from PR #1 (the approved prototype plus the M0 hardening), so PR #1 is folded in and is not merged into `main` on its own.
+- **Each milestone is its own branch and PR into `cursor/develop-0acd`.** It has small conventional commits, is pushed regularly, and is merged only when its CI is green. Vercel previews are available for every branch.
+- **One release PR `cursor/develop-0acd` → `main`.** It stays a draft until M4 is done. It is merged once, only when unit, E2E, axe, Lighthouse budgets, VRT and build are all green, and production at `https://luke-look.vercel.app` is then verified.
 
 | Milestone | Scope | Exit criteria |
 | --- | --- | --- |
-| **M0. Ship the approved design** (this PR, D4) | After final plan approval: the pre-merge hardening commit (§7: email to click-to-reveal, footer note removed, `/design` noindex, overflow fix), then Luke merges PR #1. Production shows the approved design instead of the starter page. No analytics yet. | View Source on production has no `gmail`; Luke merges |
+| **M0. Harden the approved design** (PR #1 → integration branch) | the pre-merge hardening commits (§7: email to click-to-reveal, footer note removed, `/design` noindex, overflow fix). No analytics. | no `gmail` in the build output; no horizontal overflow |
 | **M1. Foundation and structure** | CI (`quality` and `browser` without VRT), Vitest and Playwright setup, `cacheComponents` off, two root layouts, cookie redirect, typed dictionaries, metadata, hreflang, sitemap, robots (including AI-crawler rules), 404, security headers; port the sections as Server Components and islands, including `EmailReveal` and the `check-no-email` guard | E2E, axe, content and no-email guards green; visually equal to the prototype on manual check |
-| **M2. Performance and accessibility** | font subset pipeline, lazy motion and Canvas, CSS hero intro, pause toggle, Experience rows readable without expanding, accessibility fixes, budget script, LHCI; delete `/design` and `components/design` | budgets and LHCI blocking assertions green; PageSpeed Insights mobile ≥ 90 on the preview |
-| **M3. Consent, analytics, privacy and social** | consent banner (4 languages, Consent Mode v2, footer 「Cookie 設定」), GA (`lazyOnload`, only after Accept, opt-out), `track()` and events, Vercel Web Analytics, privacy notice, static OG images, JSON-LD, Search Console meta tag, translation notes, ja and ko `noindex` gate | consent, analytics and contact E2E green; DebugView walkthrough done after merge |
-| **M4. VRT and launch checks** | Tier 1 baselines (17) and `update-vrt.yml`; `vrt-full.yml` plus its first full run (38); ruleset (Luke); README runbook; UTM links on LinkedIn and CakeResume; LinkedIn Post Inspector; Search Console sitemap; Vercel AI-bot firewall settings (Luke) | the three required checks green; the first full matrix reviewed and refreshed; the manual list in §11.7 done |
+| **M2. Performance and accessibility** | font subset pipeline, lazy motion and Canvas, CSS hero intro, pause toggle, Experience rows readable without expanding, accessibility fixes, budget script, LHCI; delete `/design` and `components/design` | budgets and LHCI blocking assertions green |
+| **M3. Consent, analytics, privacy and social** | consent banner (4 languages, Consent Mode v2, footer 「Cookie 設定」), GA (`lazyOnload`, only after Accept, opt-out), `track()` and events, Vercel Web Analytics, privacy notice, static OG images, JSON-LD, Search Console meta tag, translation notes, ja and ko `noindex` gate | consent, analytics and contact E2E green |
+| **M4. VRT and release** | Tier 1 baselines (17) and `update-vrt.yml`; `vrt-full.yml` plus its first full run (38); README runbook; then the release PR → `main` | every check green on the release PR; production verified after the merge |
+| **After release (Luke)** | ruleset, Vercel AI-bot firewall, Web Analytics toggle, GA admin settings, Search Console, UTM links, DebugView walkthrough, `?notrack=1` (§13.2) | — |
 | **Later (optional)** | native ja and ko review → remove `noindex` and add them to hreflang and the sitemap; the résumé PDF; the contact form (§10.6) if Luke wants one; a custom domain (§10.3) | — |
 
 VRT arrives in M4 on purpose. Baselines taken while M1–M3 are still changing the UI would need regenerating on almost every PR, and that churn is exactly the cost the review found.
@@ -745,6 +750,11 @@ VRT arrives in M4 on purpose. Baselines taken while M1–M3 are still changing t
 ---
 
 ## 14. Review changelog
+
+### Revision 4: delivery (2026-11-16)
+
+- Production stays unchanged until everything is finished. Milestones merge into the integration branch `cursor/develop-0acd`, and `main` gets one release merge at the end (§12, §10.1).
+- PR #1 is folded into the integration branch instead of being merged into `main` first. This replaces D4's interim production site.
 
 ### Revision 3: Luke's decisions (2026-11-16)
 
