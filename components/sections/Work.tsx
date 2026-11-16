@@ -1,3 +1,4 @@
+import { Fragment, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { FEATURED_TECH, WORK_TECH } from "@/lib/site";
@@ -7,6 +8,18 @@ import { CheckIcon, LockIcon, ProjectArt } from "@/components/ui/Icons";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 const CARD_SPANS = ["xl:col-span-2", "xl:col-span-2", "xl:col-span-2", "xl:col-span-3", "md:col-span-2 xl:col-span-3"];
+
+/** U+200B in a dictionary string is an explicit wrap point. It becomes <wbr> so it is not copied or read. */
+function withBreaks(text: string): ReactNode {
+  const parts = text.split("\u200b");
+  if (parts.length === 1) return text;
+  return parts.map((part, i) => (
+    <Fragment key={i}>
+      {i > 0 ? <wbr /> : null}
+      {part}
+    </Fragment>
+  ));
+}
 
 function ProjectNotes({ label, notes }: { label: string; notes: string[] }) {
   return (
@@ -47,7 +60,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
             aria-hidden="true"
             className="pointer-events-none absolute -top-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-3xl"
           />
-          <div className="relative flex flex-col lg:col-span-5">
+          <div className="relative flex min-w-0 flex-col lg:col-span-5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-primary px-3 py-1 font-mono text-[11px] tracking-wider text-primary-ink uppercase">
                 {t.featuredTag}
@@ -57,7 +70,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
               </span>
             </div>
             <h3 id="work-featured-title" className="display mt-6 text-[clamp(1.9rem,3.6vw,3.25rem)] [word-break:keep-all] text-ink">
-              {t.featured.title}
+              {withBreaks(t.featured.title)}
             </h3>
             <p className="mt-2 text-sm font-medium text-primary">{t.featured.org}</p>
             <p className="pretty mt-5 text-base leading-relaxed text-ink-2">{t.featured.desc}</p>

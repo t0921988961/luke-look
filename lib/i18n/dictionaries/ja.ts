@@ -126,7 +126,9 @@ const dict = {
     scaleLabel: "プロダクト規模",
     detail: "このプロジェクト",
     featured: {
-      title: "VisionMax フリート管理プラットフォーム",
+      // U+200B is the only extra wrap point. The heading keeps word-break: keep-all,
+      // so the line breaks before プラットフォーム instead of inside a word.
+      title: "VisionMax フリート管理\u200bプラットフォーム",
       org: "神達電腦（MiTAC）· B2B サブスクリプション",
       desc: "販売代理店が車両の状況を把握するためのサブスク型プラットフォーム。メインのフロントエンド開発者として Vue 3 移行を完了。",
       facts: ["約 20 モジュール", "9 言語（ヘブライ語 RTL を含む）", "Dark / Light テーマ", "Vue 3 移行"],
