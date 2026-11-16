@@ -25,6 +25,8 @@ const dict = {
     dark: "深色",
     system: "跟隨系統",
     skip: "跳至主要內容",
+    pause: "暫停動態",
+    play: "播放動態",
   },
   hero: {
     eyebrow: "前端工程師 · 台北",

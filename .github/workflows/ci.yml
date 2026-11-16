@@ -40,6 +40,8 @@ jobs:
         run: npm run build
       - name: No plain email in the build output
         run: npm run check:email
+      - name: Size budgets
+        run: npm run budgets
 
   browser:
     name: browser
@@ -67,3 +69,23 @@ jobs:
           name: playwright-report
           path: playwright-report
           retention-days: 14
+
+  lighthouse:
+    name: lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build
+        run: npm run build
+        env:
+          # robots.txt allows crawling only when this is production. Lighthouse
+          # scores the built file, so the job has to build the production rules.
+          VERCEL_ENV: production
+      - name: Lighthouse
+        run: npm run lhci

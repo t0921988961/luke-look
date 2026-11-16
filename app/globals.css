@@ -1,5 +1,43 @@
 @import "tailwindcss";
 
+/* Committed subsets. A weight range stops the browser from synthesizing bold. */
+@font-face {
+  font-family: "Noto Sans TC";
+  src: url("../assets/fonts/NotoSansTC-400.woff2") format("woff2");
+  font-weight: 100 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans TC";
+  src: url("../assets/fonts/NotoSansTC-700.woff2") format("woff2");
+  font-weight: 601 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans JP";
+  src: url("../assets/fonts/NotoSansJP-400.woff2") format("woff2");
+  font-weight: 100 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans JP";
+  src: url("../assets/fonts/NotoSansJP-700.woff2") format("woff2");
+  font-weight: 601 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans KR";
+  src: url("../assets/fonts/NotoSansKR-400.woff2") format("woff2");
+  font-weight: 100 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Noto Sans KR";
+  src: url("../assets/fonts/NotoSansKR-700.woff2") format("woff2");
+  font-weight: 601 900;
+  font-display: swap;
+}
+
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 :root {
@@ -21,7 +59,7 @@
   --deep-2: #081b63;
   --shadow: 0 1px 2px rgb(11 20 48 / 0.04), 0 12px 40px -12px rgb(11 20 48 / 0.12);
 
-  --font-cjk: var(--font-noto-tc), "PingFang TC", "Microsoft JhengHei";
+  --font-cjk: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei";
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   color-scheme: light;
 }
@@ -48,10 +86,10 @@
 }
 
 :lang(ja) {
-  --font-cjk: var(--font-noto-jp), "Hiragino Sans", "Yu Gothic";
+  --font-cjk: "Noto Sans JP", "Hiragino Sans", "Yu Gothic";
 }
 :lang(ko) {
-  --font-cjk: var(--font-noto-kr), "Apple SD Gothic Neo", "Malgun Gothic";
+  --font-cjk: "Noto Sans KR", "Noto Sans TC", "Apple SD Gothic Neo", "Malgun Gothic";
 }
 
 @theme inline {
@@ -272,6 +310,11 @@ html.theme-vt::view-transition-new(root) {
 html.theme-vt *,
 html.theme-vt body {
   transition: none !important;
+}
+
+/* A paused visitor still sees the page; only the infinite pulses stop. */
+html[data-loops="off"] .animate-ping {
+  animation: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

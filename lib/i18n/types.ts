@@ -26,6 +26,8 @@ export type Dict = {
     dark: string;
     system: string;
     skip: string;
+    pause: string;
+    play: string;
   };
   hero: {
     eyebrow: string;

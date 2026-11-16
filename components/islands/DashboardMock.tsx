@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useMotionAllowed } from "@/lib/motion";
+import { useLoopsRunning } from "@/lib/motion";
 import { loadGsap } from "@/components/motion/load";
 
 /** Abstract, text-free dashboard. Being text-free lets it mirror cleanly to show an RTL layout. */
@@ -9,7 +9,7 @@ export function DashboardMock({ note }: { note: string }) {
   const root = useRef<HTMLElement>(null);
   const [dark, setDark] = useState(false);
   const [rtl, setRtl] = useState(false);
-  const motion = useMotionAllowed();
+  const motion = useLoopsRunning();
 
   useEffect(() => {
     if (!motion || !root.current) return;

@@ -13,7 +13,7 @@ export default defineConfig({
       provider: "v8",
       include: ["lib/**/*.ts"],
       // next/font only runs inside the Next compiler.
-      exclude: ["lib/fonts.ts"],
+      exclude: ["lib/fonts/**"],
       thresholds: { lines: 90, functions: 90, statements: 90, branches: 85 },
     },
   },

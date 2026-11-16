@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
-import { HorizonCanvas } from "@/components/islands/HorizonCanvas";
-import { IslandBoundary } from "@/components/islands/IslandBoundary";
+import { LazyHorizon } from "@/components/islands/LazyHorizon";
 import { TaipeiClock } from "@/components/islands/TaipeiClock";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { SplitWords } from "@/components/ui/SplitWords";
@@ -21,9 +20,7 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
         className="pointer-events-none absolute inset-0 -z-10 [background:radial-gradient(60%_45%_at_68%_62%,rgb(255_190_150/0.32),transparent_70%),radial-gradient(70%_60%_at_20%_80%,rgb(70_120_255/0.16),transparent_70%)] dark:[background:radial-gradient(60%_45%_at_68%_62%,rgb(255_140_100/0.12),transparent_70%),radial-gradient(70%_60%_at_20%_80%,rgb(80_120_255/0.22),transparent_70%)]"
       />
       <div className="hero-canvas absolute inset-0 -z-10 [mask-image:linear-gradient(to_bottom,transparent_38%,#000_78%)]">
-        <IslandBoundary>
-          <HorizonCanvas className="h-full w-full" />
-        </IslandBoundary>
+        <LazyHorizon className="h-full w-full" />
       </div>
 
       <div data-hero-content className="relative mx-auto flex w-full max-w-[1440px] flex-1 flex-col px-5 pt-28 pb-8 md:px-10 md:pt-36 xl:px-16">

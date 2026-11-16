@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useMotionAllowed } from "@/lib/motion";
+import { useLoopsRunning, useMotionAllowed } from "@/lib/motion";
 import { loadGsap } from "@/components/motion/load";
 
 const N = 96;
@@ -88,6 +88,7 @@ export function ApproachStage({ count }: { count: number }) {
   const root = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const motion = useMotionAllowed();
+  const loops = useLoopsRunning();
 
   useEffect(() => {
     const section = root.current?.closest("section");
@@ -158,7 +159,7 @@ export function ApproachStage({ count }: { count: number }) {
 
   useEffect(() => {
     const scope = root.current;
-    if (!motion || !scope) return;
+    if (!loops || !scope) return;
     let revert: (() => void) | undefined;
     let cancelled = false;
     loadGsap().then(({ gsap }) => {
@@ -173,7 +174,7 @@ export function ApproachStage({ count }: { count: number }) {
       cancelled = true;
       revert?.();
     };
-  }, [motion]);
+  }, [loops]);
 
   return (
     <div
