@@ -1,0 +1,195 @@
+import type { Dict } from "../types";
+
+const dict = {
+  langLabel: "한국어",
+  langShort: "한국어",
+  meta: {
+    title: "Luke Cheng (鄭宏璋) — 타이베이 프론트엔드 엔지니어",
+    description:
+      "타이베이의 7년 차 프론트엔드 엔지니어 Luke Cheng(鄭宏璋). Vue 3, Angular, TypeScript로 주로 B2B·IoT 관리자 화면과 데이터 대시보드를 개발합니다.",
+  },
+  nav: {
+    about: "소개",
+    experience: "경력",
+    work: "프로젝트",
+    approach: "일하는 방식",
+    skills: "기술",
+    contact: "연락처",
+    primary: "주 메뉴",
+    menu: "메뉴",
+    close: "닫기",
+    theme: "테마",
+    language: "언어",
+    languageButton: "한국어, 언어 변경",
+    light: "라이트",
+    dark: "다크",
+    system: "시스템 설정",
+    skip: "본문으로 건너뛰기",
+  },
+  hero: {
+    eyebrow: "프론트엔드 엔지니어 · 타이베이",
+    greeting: "안녕하세요, Luke Cheng입니다.",
+    title: [["복잡한 시스템을"], [{ hl: "명확하고" }, " 쓰기 쉽게."]],
+    intro:
+      "7년 차 프론트엔드 개발자입니다. Vue 3와 Angular(TypeScript + RxJS)로 주로 B2B·IoT 관리자 화면과 데이터 대시보드를 개발합니다.",
+    ctaPrimary: "연락하기",
+    ctaSecondary: "경력 보기",
+    nowLabel: "현재",
+    now: "MiTAC · 프론트엔드 엔지니어",
+    stackLabel: "주요 기술",
+    stack: "Vue 3 · Angular · TypeScript",
+    scroll: "스크롤",
+    localTime: "타이베이 시간",
+  },
+  about: {
+    title: "소개",
+    lead: "B2B·IoT 관리자 화면과 데이터 대시보드를 주로 개발합니다.",
+    body: "현재 MiTAC에서 구독형 차량 관제 플랫폼의 메인 프론트엔드 개발자로 일하고 있습니다. 두 개의 프론트엔드 프로젝트를 Vue 3로 업그레이드하는 작업을 주도했고, 백엔드 엔지니어 4명, UI/UX 디자이너 2명과 협업하며 기능 명세서에 따라 개발합니다. Vitest 단위 테스트와 SonarQube로 코드 품질을 관리합니다.",
+    stats: [
+      { value: 7, suffix: "년", label: "프론트엔드 개발 경력" },
+      { prefix: "약 ", value: 20, suffix: "개", label: "담당 플랫폼 모듈" },
+      { value: 9, suffix: "개", label: "지원 언어 (히브리어 RTL 포함)" },
+      { prefix: "약 ", value: 100, suffix: "개", label: "Vitest 테스트 파일" },
+    ],
+  },
+  experience: {
+    title: "경력",
+    intro: "웹 디자인에서 프론트엔드 엔지니어링까지. 캠페인 사이트, 웹사이트 이전, 내부 시스템, 구독형 플랫폼을 만들어 왔습니다.",
+    present: "현재",
+    more: "자세히",
+    less: "접기",
+    tech: "사용 기술",
+    items: [
+      {
+        company: "MiTAC (神達電腦)",
+        role: "프론트엔드 엔지니어",
+        summary: "VisionMax 구독형 차량 관제 플랫폼의 메인 프론트엔드 개발자.",
+        bullets: [
+          "이벤트, 운행, 차량, 운전자, 리포트 등 약 20개 모듈로 구성된 VisionMax의 프론트엔드 개발과 운영, 별도의 디바이스 관리 화면 유지보수를 담당. 백엔드 엔지니어 4명(Server, AI Server, PHP)과 협업.",
+          "두 개의 프론트엔드 프로젝트를 Vue 3로 업그레이드하고 공통 컴포넌트, 상태 관리, 스타일 변수를 재구성. 업그레이드 후 기존 기능이 정상 동작하도록 확인.",
+          "재직 기간 동안 플랫폼 구독 수가 약 500에서 1만 이상으로 증가했으며, 그동안 신규 기능 개발과 여러 국가 출시를 지원.",
+          "UI/UX 디자이너 2명과 협업 프로세스를 만들고, 공통 컴포넌트와 Dark / Light 색상 변수 시스템으로 디자인을 구현.",
+          "vue-i18n으로 9개 언어(히브리어 RTL 포함)를 지원. 언어 파일은 Google Sheet 스크립트로 일괄 추출해 두 시스템에서 동기화.",
+          "Vitest로 단위 테스트(약 100개 파일)를 작성하고 SonarQube로 코드 품질을 점검.",
+          "기능 명세서와 개발 계획 문서 프로세스를 만들고, Claude Code, Cursor, Copilot이 같은 개발 규칙을 공유하도록 정리.",
+          "실시간 영상, 지도 이벤트 표시, ECharts 데이터 차트 등의 기능 포함.",
+        ],
+      },
+      {
+        company: "坤侑科技",
+        role: "프론트엔드 엔지니어",
+        summary: "감식 시스템, 전자발찌 관제 시스템 등 내부 시스템의 프론트엔드.",
+        bullets: [
+          "내부 시스템의 프론트엔드 구축과 유지보수. RESTful API와 SignalR 실시간 푸시 연동.",
+          "감식 시스템: 감식 데이터 생성과 진행 상황 추적. 서명 패드, 실물 화상기 등 주변 장치 연동.",
+          "관제 시스템: 대만 지도 서비스를 연동해 착용자 위치와 경고 범위를 실시간으로 표시.",
+        ],
+      },
+      {
+        company: "New Kinpo Group (Kinpo Electronics)",
+        role: "프론트엔드 엔지니어",
+        summary: "스마트 공장 상황실 시각화와 XYZprinting 웹사이트 이전.",
+        bullets: [
+          "스마트 공장 상황실의 데이터 시각화 UI를 개발하고 스마트 빌딩 상황실 시스템을 유지보수.",
+          "XYZprinting 웹사이트를 Play Framework(Java)에서 Angular 9로 이전하고 ngx-translate로 다국어를 구현, 이후 유지보수 담당.",
+          "Docker로 Angular 프로젝트 패키징.",
+          "필리핀 팀 엔지니어에게 프론트엔드 개념과 개발 도구를 지도.",
+        ],
+      },
+      {
+        company: "巧禾數位",
+        role: "프론트엔드 엔지니어",
+        summary: "금융권 고객을 위한 반응형 캠페인 사이트와 인터랙션.",
+        bullets: [
+          "Vue.js / Nuxt.js로 캠페인 사이트를 개발·유지보수하고 백엔드 데이터 연동, LINE / Facebook 로그인 구현.",
+          "Bank SinoPac, Taishin Richart, Fubon, Prudential, Amundi, Neuberger Berman, Fidelity, StockFeel 등 고객사의 반응형 캠페인 사이트와 인터랙션(CSS 애니메이션, Canvas 등) 제작.",
+        ],
+      },
+      {
+        company: "佳因企業",
+        role: "웹 디자이너",
+        summary: "회사 웹사이트 모바일 개편과 사이트 분석.",
+        bullets: [
+          "회사 웹사이트를 유지보수하고 모바일(RWD)로 개편. Google Analytics, Google Tag Manager, Hotjar로 분석.",
+          "SNS 운영, 영상·제품 사진 편집, 전단지와 포스터 등 그래픽 디자인 담당.",
+        ],
+      },
+    ],
+  },
+  work: {
+    title: "프로젝트",
+    intro: "참여했던 프로젝트입니다. 일부는 내부 시스템이라 글로만 소개합니다.",
+    featuredTag: "주요 프로젝트",
+    illustrationNote: "예시 애니메이션이며 실제 제품 화면이 아닙니다",
+    scaleLabel: "제품 규모",
+    featured: {
+      title: "VisionMax 차량 관제 플랫폼",
+      org: "MiTAC · B2B 구독형",
+      desc: "딜러가 차량 현황을 파악할 수 있도록 돕는 구독형 플랫폼. 메인 프론트엔드 개발자로 Vue 3 업그레이드를 완료.",
+      facts: ["약 20개 모듈", "9개 언어 (히브리어 RTL 포함)", "Dark / Light 테마", "Vue 3 업그레이드"],
+      scale: "구독 수: 약 500 → 1만 이상",
+    },
+    privateNote: "내부 시스템으로 공개 불가",
+    items: [
+      { title: "감식 시스템", org: "坤侑科技", desc: "감식 데이터 생성과 진행 추적. 서명 패드, 실물 화상기 연동.", private: true },
+      { title: "전자발찌 관제 시스템", org: "坤侑科技", desc: "지도에 착용자 위치와 경고 범위를 표시.", private: true },
+      { title: "IoT 스마트 공장 상황실", org: "Kinpo Electronics", desc: "공장 데이터 시각화 대시보드." },
+      { title: "XYZprinting 웹사이트 이전", org: "Kinpo Electronics", desc: "Play Framework에서 Angular 9로 이전하고 다국어 지원." },
+      {
+        title: "금융권 캠페인 사이트",
+        org: "巧禾數位",
+        desc: "Bank SinoPac, Taishin Richart, Fubon, Fidelity 등을 위한 반응형 캠페인 페이지와 인터랙션.",
+      },
+    ],
+  },
+  approach: {
+    title: "일하는 방식",
+    intro: "팀 안에서 일을 안정적으로 진행하기 위해 지키는 것들.",
+    steps: [
+      {
+        title: "명세에서 시작하기",
+        body: "기능 명세서와 개발 계획 문서 프로세스를 만들고, Jira로 백엔드와 API 명세를 확인하며 Merge Request로 변경을 관리합니다.",
+      },
+      {
+        title: "공통 컴포넌트와 두 가지 테마",
+        body: "UI/UX 디자이너와 협업 프로세스를 만들고, 공통 컴포넌트와 Dark / Light 색상 변수 시스템으로 일관된 화면을 유지합니다.",
+      },
+      {
+        title: "다국어와 RTL",
+        body: "vue-i18n으로 9개 언어(히브리어 RTL 포함)를 지원합니다. 언어 파일은 Google Sheet 스크립트로 일괄 추출해 두 시스템에서 동기화합니다.",
+      },
+      {
+        title: "테스트와 품질",
+        body: "Vitest 단위 테스트와 SonarQube로 품질을 점검합니다. Claude Code, Cursor, Copilot이 같은 개발 규칙을 공유합니다.",
+      },
+    ],
+  },
+  skills: {
+    title: "기술",
+    intro: "매일 사용하는 프레임워크, 도구, 워크플로.",
+    groups: ["프레임워크와 언어", "UI와 스타일", "다국어", "테스트와 품질", "도구와 워크플로"],
+    eduTitle: "학력",
+    school: "Hwa Hsia University of Technology (華夏科技大學)",
+    dept: "전자공학과",
+    langTitle: "언어",
+    langs: [
+      { name: "중국어", level: "모국어" },
+      { name: "영어", level: "영문 기술 문서와 API 문서를 읽을 수 있음" },
+    ],
+  },
+  contact: {
+    eyebrow: "연락처",
+    title: "편하게 연락 주세요.",
+    body: "LinkedIn, CakeResume 또는 이메일로 연락하실 수 있습니다.",
+    reveal: "이메일 보기",
+    hide: "이메일 숨기기",
+    copy: "복사",
+    copied: "복사됨",
+    send: "메일 보내기",
+    noscript: "LinkedIn 또는 CakeResume로 연락해 주세요.",
+    backToTop: "맨 위로",
+    rights: "© 2026 Luke Cheng (鄭宏璋)",
+  },
+} satisfies Dict;
+
+export default dict;
