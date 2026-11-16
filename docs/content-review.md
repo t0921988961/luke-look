@@ -12,3 +12,5 @@ The Chinese page is the original. English, Japanese and Korean are translations.
 Non-Chinese pages say they are translated from the Chinese original, and that Luke works in Mandarin and reads English technical and API documentation.
 
 Known line to recheck with a native speaker: ja 「足輪監視システム」.
+
+Enhancements v2 added a career story and short project notes in ja and ko. Those lines still need a native reader before either locale is indexed.
