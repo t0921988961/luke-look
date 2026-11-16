@@ -13,4 +13,4 @@ Non-Chinese pages say they are translated from the Chinese original, and that Lu
 
 Known line to recheck with a native speaker: ja 「足輪監視システム」.
 
-Enhancements v2 added a career story and short project notes in ja and ko. Those lines still need a native reader before either locale is indexed.
+Enhancements v2 added short project notes in ja and ko. Those lines still need a native reader before either locale is indexed. The career-story copy was removed at Luke's request.
