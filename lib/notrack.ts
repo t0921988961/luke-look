@@ -32,5 +32,7 @@ export function applyNoTrackQuery(search = window.location.search): boolean {
   } catch {
     // Storage blocked: the query still hides tracking for this view.
   }
-  return isNoTrackNow();
+  if (value === "1" || value === "off") return true;
+  if (value === "0") return false;
+  return readNoTrack();
 }
