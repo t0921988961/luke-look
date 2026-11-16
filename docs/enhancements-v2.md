@@ -1,6 +1,6 @@
 # Enhancements v2
 
-Status: round 2 on `feature/enhancements-v2`. This branch does not touch production. `main` stays the release branch. PR #16 CI (quality, browser, lighthouse) was green before this round.
+Status: round 3 on `feature/enhancements-v2`. This branch does not touch production. `main` stays the release branch.
 
 Inputs: `docs/design.md`, `docs/plan.md`, and `resume_v3_zh.md`. S5-Style’s gallery (editorial timelines, drawn lines, chapter-like case studies) and Awwwards motion patterns (path-following, staged line drawing, a scrubbable story) were used as reference only. Nothing is copied.
 
@@ -19,7 +19,7 @@ Inputs: `docs/design.md`, `docs/plan.md`, and `resume_v3_zh.md`. S5-Style’s ga
 | 9 | Hero Canvas rewrite | The horizon already pauses off-screen, caps DPR, and follows the palette. A rewrite risks Lighthouse and the look Luke approved. | **Leave the structure.** Round 2 only adds a second warm glint and draws fewer rows on a phone. The canvas stays in the lazy chunk. |
 | 10 | Contact form | Already specified as later work in `docs/plan.md`. It adds a dynamic route and a secret. | **Leave** |
 | 11 | Skill map with percentages | Same problem as rank 4. | **Reject percentages.** Round 2 draws one equal rule through the five résumé groups. Every group is the same size. |
-| 12 | Magnetic buttons | Pointer tracking would land in the header bundle. Initial JS is already at the 150 KB budget. | **Reject.** Hover uses CSS: a nav underline and a sheen on the hero button, both off when motion is paused or reduced. |
+| 12 | Magnetic buttons | Pointer tracking would land in the header bundle. Initial JS was at the 150 KB budget. | **Build in round 3**, after the experience list and the email reveal left the first-load graph. The handler lives in the deferred chunk. Coarse pointers and paused motion leave the buttons still. |
 
 ## What shipped
 
@@ -32,6 +32,14 @@ Round 2, still on this branch:
 - **Skill rule.** Five résumé groups sit on one line. There is no score and no bar. The line draws once when motion is on, and it is already drawn when motion is off.
 - **Light on the horizon.** A second warm glint crosses the existing Canvas. Phones draw fewer rows.
 - **CSS hover only.** The desktop nav grows a warm underline, and the hero contact button gets a sheen. Neither runs under reduced motion or the pause toggle, and neither adds a library.
+
+Round 3:
+
+- **First-load JavaScript.** The experience panels, the email reveal, the approach stage, and the dashboard loop are plain HTML until a deferred chunk attaches their behaviour. The horizon canvas and the scroll motion engine wait until the browser is idle, so they stay out of the blocking window. First-load JS on every locale: 149.4 KB → 144.3 KB (budget 150 KB). The rest of the graph is 218.1 KB of 230 KB.
+- **Main-thread time.** Local Lighthouse, three runs, median total blocking time: Chinese home 267 ms → 104 ms, English 269.5 ms → 111 ms. Both sit under the 200 ms warning. The earlier English runs were 257 ms, 276 ms, and 269.5 ms.
+- **Who Luke is.** Beside the greeting, a line draws the name used in every locale and a short role stroke in apricot and coral. Three shapes — brand blue, apricot, coral — morph only while motion is on. Reduced motion and the pause toggle leave the drawing finished and the shapes still. The greeting stays the accessible name. No new claim.
+- **Magnetic buttons.** The two hero actions ease toward a fine pointer. Coarse pointers and paused motion leave them still.
+- **Scroll-linked section transitions.** Not added. The career story already scrubs with the scroll, and another scroll listener would sit in the same blocking window the idle delay is trying to leave.
 
 ## Content rules
 
