@@ -70,7 +70,7 @@ export function Skills() {
   );
 
   return (
-    <section ref={root} id="skills" aria-labelledby="skills-title" className="relative scroll-mt-20 py-24 md:py-36">
+    <section ref={root} id="skills" aria-labelledby="skills-title" className="relative scroll-mt-20 overflow-x-clip py-24 md:py-36">
       <div className="mx-auto max-w-[1440px] px-5 md:px-10 xl:px-16">
         <div className="mx-auto max-w-[1312px]">
           <SectionHead index="05" id="skills-title" title={t.skills.title} intro={t.skills.intro} />
