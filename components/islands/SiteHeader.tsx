@@ -110,6 +110,21 @@ export function SiteHeader({
   const toggle = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
+    let stop = () => {};
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      import("@/components/islands/StoryDriver").then(({ startStory }) => {
+        if (!cancelled) stop = startStory();
+      });
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      stop();
+    };
+  }, []);
+
+  useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
       const delta = y - lastY.current;

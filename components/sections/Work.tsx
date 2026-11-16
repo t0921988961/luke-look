@@ -8,6 +8,30 @@ import { SectionHead } from "@/components/ui/SectionHead";
 
 const CARD_SPANS = ["xl:col-span-2", "xl:col-span-2", "xl:col-span-2", "xl:col-span-3", "md:col-span-2 xl:col-span-3"];
 
+function ProjectNotes({ label, notes }: { label: string; notes: string[] }) {
+  return (
+    <details className="work-more mt-5 border-t border-line pt-3">
+      <summary role="button" className="cursor-pointer">
+        <span className="flex min-h-11 items-center justify-between gap-3 text-sm font-semibold text-ink">
+          {label}
+          <span aria-hidden="true" className="work-more-icon relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line-strong text-primary">
+            <span className="absolute h-[1.5px] w-3 bg-current" />
+            <span className="absolute h-3 w-[1.5px] bg-current" />
+          </span>
+        </span>
+      </summary>
+      <ul className="grid gap-2 pt-3 pb-1">
+        {notes.map((note) => (
+          <li key={note} className="pretty relative pl-4 text-sm leading-relaxed text-ink-2">
+            <span aria-hidden="true" className="absolute top-[0.65em] left-0 h-1.5 w-1.5 rounded-full bg-sky" />
+            {note}
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
+
 export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
   return (
     <section id="work" aria-labelledby="work-title" className="relative scroll-mt-20 px-5 py-24 md:px-10 md:py-36 xl:px-16">
@@ -56,6 +80,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
                 </li>
               ))}
             </ul>
+            <ProjectNotes label={t.detail} notes={t.featured.more} />
           </div>
           <div className="relative lg:col-span-7 lg:self-center">
             <IslandBoundary>
@@ -100,6 +125,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
                     </li>
                   ))}
                 </ul>
+                <ProjectNotes label={t.detail} notes={item.more} />
               </article>
             </li>
           ))}

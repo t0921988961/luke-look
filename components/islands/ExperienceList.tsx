@@ -37,7 +37,7 @@ export function ExperienceList({
         const panelId = `exp-panel-${i}`;
         const [firstBullet, ...moreBullets] = item.bullets;
         return (
-          <li key={i} data-reveal className="relative pl-8 md:pl-14">
+          <li key={i} id={`role-${i}`} data-reveal className="relative scroll-mt-28 pl-8 md:pl-14">
             <span
               data-node
               aria-hidden="true"
@@ -57,7 +57,7 @@ export function ExperienceList({
                   onClick={() => setOpen(isOpen ? -1 : i)}
                   className="relative grid w-full grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1 py-6 text-left md:grid-cols-[11rem_1fr_auto] md:items-center md:gap-x-8 md:py-8 lg:grid-cols-[13rem_1fr_16rem_auto]"
                 >
-                  <span className="col-span-2 font-mono text-xs tracking-wider text-muted tabular-nums md:col-span-1">
+                  <span className="col-span-2 font-mono text-xs tracking-wider text-ink-2 tabular-nums md:col-span-1">
                     {item.period}
                   </span>
                   <span className="min-w-0">

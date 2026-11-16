@@ -30,7 +30,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       <main id="main" tabIndex={-1} className="outline-none">
         <Hero t={t.hero} locale={locale} />
         <About t={t.about} locale={locale} />
-        <Experience t={t.experience} locale={locale} />
+        <Experience t={t.experience} story={t.story} locale={locale} />
         <Work t={t.work} locale={locale} />
         <Approach t={t.approach} locale={locale} />
         <Skills t={t.skills} locale={locale} translationNote={t.translationNote} />

@@ -1,10 +1,11 @@
 import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { EXPERIENCE_TECH, PERIODS } from "@/lib/site";
+import { CareerStory } from "@/components/sections/CareerStory";
 import { ExperienceList } from "@/components/islands/ExperienceList";
 import { SectionHead } from "@/components/ui/SectionHead";
 
-export function Experience({ t, locale }: { t: Dict["experience"]; locale: Locale }) {
+export function Experience({ t, locale, story }: { t: Dict["experience"]; locale: Locale; story: Dict["story"] }) {
   const items = t.items.map((item, i) => ({
     ...item,
     period: `${PERIODS[i].from} — ${PERIODS[i].to ?? t.present}`,
@@ -19,6 +20,7 @@ export function Experience({ t, locale }: { t: Dict["experience"]; locale: Local
     >
       <div className="mx-auto max-w-[1312px]">
         <SectionHead index="02" id="experience-title" title={t.title} intro={t.intro} locale={locale} />
+        <CareerStory t={story} present={t.present} />
         <ExperienceList items={items} labels={{ more: t.more, less: t.less, tech: t.tech }} />
       </div>
     </section>
