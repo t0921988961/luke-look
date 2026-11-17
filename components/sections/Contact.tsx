@@ -2,12 +2,11 @@ import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { LINKS } from "@/lib/site";
 import { CookieSettingsButton } from "@/components/islands/CookieSettingsButton";
-import { EmailReveal } from "@/components/islands/EmailReveal";
 import { MotionToggle } from "@/components/islands/MotionToggle";
 import { NoTrackDot } from "@/components/islands/NoTrackDot";
 import { PrivacyDetails } from "@/components/sections/PrivacyDetails";
 import { LazyHorizon } from "@/components/islands/LazyHorizon";
-import { ArrowUpRight } from "@/components/ui/Icons";
+import { ArrowUpRight, MailIcon } from "@/components/ui/Icons";
 import { SplitWords } from "@/components/ui/SplitWords";
 
 const PRIMARY_LINKS = [
@@ -79,8 +78,26 @@ export function ContactFooter({
                 ))}
               </ul>
 
-              <div data-reveal className="mt-8">
-                <EmailReveal labels={t} />
+              <div data-reveal className="mt-8 flex flex-col gap-4">
+                <button
+                  type="button"
+                  data-email-toggle=""
+                  aria-expanded="false"
+                  aria-controls="email-reveal"
+                  data-reveal-label={t.reveal}
+                  data-hide-label={t.hide}
+                  data-copy-label={t.copy}
+                  data-copied-label={t.copied}
+                  data-send-label={t.send}
+                  className="inline-flex h-12 w-fit items-center gap-2 rounded-full border border-white/30 px-6 text-[15px] font-semibold text-white transition-colors hover:border-white"
+                >
+                  <MailIcon className="text-[17px] text-sky" />
+                  <span data-email-label="">{t.reveal}</span>
+                </button>
+                <noscript>
+                  <p className="text-sm text-white/75">{t.noscript}</p>
+                </noscript>
+                <div id="email-reveal" aria-live="polite" />
               </div>
             </section>
 

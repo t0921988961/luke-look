@@ -80,10 +80,10 @@ The grid is 12 columns, content max-width is 1312 px, and the outer padding is 2
 | Experience | Date above the company, role under the name. | Date column and company. | Date, company, role and toggle columns. Bullets in 2 columns when expanded. |
 | Work | Featured card stacked (mock under text). Cards in 1 column. | Cards in 2 columns, the last one full width. | Featured card split 5/7. Cards in a 3 + 2 bento grid. |
 | Approach | A small morph badge stays pinned at the top while the steps scroll. | Sticky stage on the left and steps on the right. | Same as tablet, larger. |
-| Skills | Groups in 1 column. | Groups in 2 columns. | Groups in 5 columns. Languages and education in a quiet row. |
+| Skills | Groups in 1 column. | Groups in 2 columns. | Groups in 5 columns. Languages in a quiet row. |
 | Contact | Rounded deep-blue panel, email wraps safely. | Same. | 10vw headline. |
 
-Education (華夏科技大學 電子工程系) sits last, in small type, next to languages. Languages are listed as Mandarin (native) and English ("can read English technical and API docs").
+Languages are listed as Mandarin (native) and English ("can read English technical and API docs"). Education is not shown.
 
 ## 6. Theme and language
 

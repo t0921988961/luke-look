@@ -2,6 +2,15 @@ import { CONSENT_DENIED } from "./consent";
 
 export const GA_MEASUREMENT_ID = "G-G5PL64KQG6";
 
+/**
+ * Vercel Web Analytics asks for `/_vercel/insights/script.js`, which only
+ * exists on Vercel. A production-mode build elsewhere (Lighthouse CI) 404s.
+ */
+export function vercelAnalyticsEnabled(env?: Record<string, string | undefined>): boolean {
+  const source = env ?? process.env;
+  return source.VERCEL === "1" && source.VERCEL_ENV === "production";
+}
+
 type Params = Record<string, string>;
 
 type AnalyticsState = {

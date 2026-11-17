@@ -53,6 +53,7 @@ beforeEach(() => {
   });
   document.documentElement.removeAttribute("data-theme");
   document.documentElement.removeAttribute("data-theme-pref");
+  document.documentElement.removeAttribute("data-loops");
   document.documentElement.className = "";
   document.documentElement.style.overflow = "";
 });

@@ -50,6 +50,14 @@ const nextConfig: NextConfig = {
     ];
   },
   turbopack: {
+    // Next prepends polyfill-module (Array.at, flat, Object.hasOwn, trimStart, …)
+    // to the framework chunk. Every browser Next supports already has those
+    // features, and Lighthouse counts the module as legacy JavaScript.
+    // https://nextjs.org/docs/architecture/supported-browsers
+    resolveAlias: {
+      "next/dist/build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+      "../build/polyfills/polyfill-module": "./lib/modern-polyfill.js",
+    },
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],

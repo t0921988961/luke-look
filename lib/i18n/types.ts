@@ -69,15 +69,18 @@ export type Dict = {
     featuredTag: string;
     illustrationNote: string;
     scaleLabel: string;
+    /** Opens the factual notes under a project. */
+    detail: string;
     featured: {
       title: string;
       org: string;
       desc: string;
       facts: string[];
       scale: string;
+      more: string[];
     };
     privateNote: string;
-    items: { title: string; org: string; desc: string; private?: boolean }[];
+    items: { title: string; org: string; desc: string; private?: boolean; more: string[] }[];
   };
   approach: {
     title: string;
@@ -88,9 +91,6 @@ export type Dict = {
     title: string;
     intro: string;
     groups: string[];
-    eduTitle: string;
-    school: string;
-    dept: string;
     langTitle: string;
     langs: { name: string; level: string }[];
   };

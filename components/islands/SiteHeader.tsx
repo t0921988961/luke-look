@@ -103,11 +103,33 @@ export function SiteHeader({
   languageLabels: LanguageLabels;
 }) {
   const [scrolled, setScrolled] = useState(false);
+  // The glass border and shadow are not compositor properties. Hold the
+  // transition off until the first scroll position is applied, so a deep link
+  // snaps to the finished bar instead of animating it during load.
+  const [chromeMotion, setChromeMotion] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState<string | null>(null);
   const lastY = useRef(0);
   const toggle = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    let stop = () => {};
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      import("@/components/islands/deferred").then((deferred) => {
+        if (cancelled) return;
+        const stopDeferred = deferred.startDeferred();
+        document.documentElement.dataset.ready = "on";
+        stop = stopDeferred;
+      });
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      stop();
+    };
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -120,8 +142,12 @@ export function SiteHeader({
       lastY.current = y;
     };
     onScroll();
+    const frame = requestAnimationFrame(() => setChromeMotion(true));
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -169,7 +195,9 @@ export function SiteHeader({
       >
         <div className="mx-auto max-w-[1440px] px-3 pt-3 md:px-6">
           <div
-            className={`flex h-14 items-center justify-between gap-4 rounded-full pr-2 pl-3 transition-[background-color,border-color,box-shadow] duration-500 md:h-16 md:pr-3 md:pl-4 ${
+            className={`flex h-14 items-center justify-between gap-4 rounded-full pr-2 pl-3 md:h-16 md:pr-3 md:pl-4 ${
+              chromeMotion ? "transition-[background-color,border-color,box-shadow] duration-500" : ""
+            } ${
               scrolled && !menuOpen
                 ? "border border-line bg-bg/75 shadow-[var(--shadow)] backdrop-blur-xl"
                 : "border border-transparent"
@@ -179,7 +207,12 @@ export function SiteHeader({
               <LogoMark animated className="h-8 w-8 transition-transform duration-500 group-hover:-rotate-6" />
               <span className="text-[15px] leading-none font-bold tracking-tight max-xs:sr-only">
                 Luke Cheng
-                <span className="ml-1.5 font-normal text-muted">鄭宏璋</span>
+                <span
+                  className={locale === "zh-TW" ? "ml-1.5 font-normal text-muted" : "han-name ml-1.5 font-normal text-muted"}
+                  lang={locale === "zh-TW" ? undefined : "zh-Hant-TW"}
+                >
+                  鄭宏璋
+                </span>
               </span>
             </a>
 
@@ -190,7 +223,7 @@ export function SiteHeader({
                     <a
                       href={`#${id}`}
                       aria-current={active === id ? "true" : undefined}
-                      className={`relative rounded-full px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
+                      className={`nav-link relative rounded-full px-3.5 py-2 text-sm font-medium whitespace-nowrap transition-colors ${
                         active === id ? "text-primary" : "text-ink-2 hover:text-ink"
                       }`}
                     >

@@ -1,6 +1,5 @@
-"use client";
-
-import { useState } from "react";
+import type { Locale } from "@/lib/i18n/config";
+import { HanRun } from "@/components/ui/HanRun";
 
 export type ExperienceItem = {
   company: string;
@@ -11,15 +10,16 @@ export type ExperienceItem = {
   tech: string[];
 };
 
+/** Closed by default. `startExperience` in the deferred chunk toggles the panels. */
 export function ExperienceList({
   items,
   labels,
+  locale,
 }: {
   items: ExperienceItem[];
   labels: { more: string; less: string; tech: string };
+  locale: Locale;
 }) {
-  const [open, setOpen] = useState(-1);
-
   return (
     <ol data-timeline className="relative mt-14 md:mt-20">
       <svg
@@ -33,11 +33,10 @@ export function ExperienceList({
       </svg>
 
       {items.map((item, i) => {
-        const isOpen = open === i;
         const panelId = `exp-panel-${i}`;
         const [firstBullet, ...moreBullets] = item.bullets;
         return (
-          <li key={i} data-reveal className="relative pl-8 md:pl-14">
+          <li key={i} id={`role-${i}`} data-reveal className="relative scroll-mt-28 pl-8 md:pl-14">
             <span
               data-node
               aria-hidden="true"
@@ -52,37 +51,30 @@ export function ExperienceList({
               <h3>
                 <button
                   type="button"
-                  aria-expanded={isOpen}
+                  className="exp-toggle relative grid w-full grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1 py-6 text-left md:grid-cols-[11rem_1fr_auto] md:items-center md:gap-x-8 md:py-8 lg:grid-cols-[13rem_1fr_16rem_auto]"
+                  aria-expanded="false"
                   aria-controls={panelId}
-                  onClick={() => setOpen(isOpen ? -1 : i)}
-                  className="relative grid w-full grid-cols-[1fr_auto] items-start gap-x-4 gap-y-1 py-6 text-left md:grid-cols-[11rem_1fr_auto] md:items-center md:gap-x-8 md:py-8 lg:grid-cols-[13rem_1fr_16rem_auto]"
+                  data-more={labels.more}
+                  data-less={labels.less}
                 >
-                  <span className="col-span-2 font-mono text-xs tracking-wider text-muted tabular-nums md:col-span-1">
+                  <span className="col-span-2 font-mono text-xs tracking-wider text-ink-2 tabular-nums md:col-span-1">
                     {item.period}
                   </span>
                   <span className="min-w-0">
-                    <span
-                      className={`block text-[clamp(1.35rem,2.6vw,2.25rem)] leading-tight font-bold tracking-tight transition-colors duration-300 ${
-                        isOpen ? "text-primary" : "text-ink group-hover:text-primary"
-                      }`}
-                    >
-                      {item.company}
+                    <span className="exp-name block text-[clamp(1.35rem,2.6vw,2.25rem)] leading-tight font-bold tracking-tight text-ink transition-colors duration-300 group-hover:text-primary">
+                      <HanRun text={item.company} locale={locale} />
                     </span>
                     <span className="mt-1 block text-sm text-muted lg:hidden">{item.role}</span>
                   </span>
                   <span className="hidden text-[15px] text-ink-2 lg:block">{item.role}</span>
                   <span
                     aria-hidden="true"
-                    className={`relative grid h-10 w-10 shrink-0 place-items-center rounded-full border transition-all duration-500 ${
-                      isOpen
-                        ? "rotate-45 border-primary bg-primary text-primary-ink"
-                        : "border-line-strong text-ink group-hover:border-primary group-hover:text-primary"
-                    }`}
+                    className="exp-plus relative grid h-10 w-10 shrink-0 place-items-center rounded-full border border-line-strong text-ink transition-all duration-500 group-hover:border-primary group-hover:text-primary"
                   >
                     <span className="absolute h-[1.5px] w-3.5 bg-current" />
                     <span className="absolute h-3.5 w-[1.5px] bg-current" />
                   </span>
-                  <span className="sr-only">{isOpen ? labels.less : labels.more}</span>
+                  <span className="exp-label sr-only">{labels.more}</span>
                 </button>
               </h3>
 
@@ -96,7 +88,7 @@ export function ExperienceList({
                 </ul>
               )}
 
-              <div id={panelId} className="expand" data-open={isOpen} inert={!isOpen}>
+              <div id={panelId} className="expand" data-open="false" inert>
                 <div>
                   <div className="grid gap-6 pb-8 md:grid-cols-[11rem_1fr] md:gap-8 lg:grid-cols-[13rem_1fr]">
                     <div className="md:col-start-2">

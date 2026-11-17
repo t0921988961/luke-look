@@ -3,6 +3,7 @@ import type { Dict } from "@/lib/i18n/types";
 import { LazyHorizon } from "@/components/islands/LazyHorizon";
 import { TaipeiClock } from "@/components/islands/TaipeiClock";
 import { ArrowUpRight } from "@/components/ui/Icons";
+import { HanRun } from "@/components/ui/HanRun";
 import { SplitWords } from "@/components/ui/SplitWords";
 
 const TITLE_SIZE: Record<Locale, string> = {
@@ -84,7 +85,7 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
             <div className="hero-late mt-7 flex flex-wrap gap-3">
               <a
                 href="#contact"
-                className="group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-ink shadow-[0_10px_30px_-10px_var(--primary)] transition-transform duration-300 hover:-translate-y-0.5"
+                className="shine group inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 text-[15px] font-semibold text-primary-ink shadow-[0_10px_30px_-10px_var(--primary)] transition-transform duration-300 hover:-translate-y-0.5"
               >
                 {t.ctaPrimary}
                 <ArrowUpRight className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -100,7 +101,9 @@ export function Hero({ t, locale }: { t: Dict["hero"]; locale: Locale }) {
           <dl className="hero-late grid content-start gap-4 text-sm md:col-span-4 md:col-start-9">
             <div className="border-t border-line-strong pt-3">
               <dt className="font-mono text-[11px] tracking-[0.14em] text-muted uppercase">{t.nowLabel}</dt>
-              <dd className="mt-1 font-medium text-ink">{t.now}</dd>
+              <dd className="mt-1 font-medium text-ink">
+                <HanRun text={t.now} locale={locale} />
+              </dd>
             </div>
             <div className="border-t border-line-strong pt-3">
               <dt className="font-mono text-[11px] tracking-[0.14em] text-muted uppercase">{t.stackLabel}</dt>

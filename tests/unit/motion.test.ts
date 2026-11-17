@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { loopsRunning, onScrollLockChange, prefersReducedMotion, setLoopsPaused, setScrollLocked, useMotionAllowed } from "@/lib/motion";
@@ -45,5 +46,50 @@ describe("scroll lock", () => {
     off();
     setScrollLocked(true);
     expect(cb).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("deferred decoration", () => {
+  it("waits four seconds on browsers without requestIdleCallback", () => {
+    for (const file of ["components/islands/LazyHorizon.tsx", "components/motion/MotionRoot.tsx"]) {
+      const source = readFileSync(file, "utf8");
+      expect(source, file).toMatch(/setTimeout\([^,]+,\s*4000\)/);
+      expect(source, file).not.toMatch(/setTimeout\([^,]+,\s*1600\)/);
+    }
+  });
+});
+
+describe("hero underline", () => {
+  it("draws with a dash longer than the path, and only while motion is allowed", () => {
+    const css = readFileSync("app/globals.css", "utf8");
+    const rule = css.match(/html\.js-motion\[data-loops="on"\] \.hero-underline\s*\{[^}]*\}/);
+    expect(rule?.[0]).toMatch(/stroke-dasharray:\s*2;/);
+    expect(rule?.[0]).toMatch(/stroke-dashoffset:\s*2;/);
+    expect(rule?.[0]).toMatch(/hero-draw 1\.1s cubic-bezier\(0\.65, 0, 0\.35, 1\) 0\.95s forwards/);
+    expect(css).not.toMatch(/\.hero-underline\s*\{[^}]*stroke-dasharray:\s*1\s*;/);
+  });
+});
+
+describe("layout reads", () => {
+  it("does not read marquee width inside the animation tick", () => {
+    const source = readFileSync("components/motion/engine.ts", "utf8");
+    const tick = source.slice(source.indexOf("const tick"), source.indexOf("gsap.ticker.add"));
+    expect(tick).not.toContain("scrollWidth");
+    expect(source).toContain("new ResizeObserver(measureTracks)");
+  });
+
+  it("measures the hero once per resize instead of every canvas frame", () => {
+    const source = readFileSync("components/islands/HorizonCanvas.tsx", "utf8");
+    const progress = source.slice(source.indexOf("const scrollProgress"), source.indexOf("const pointer"));
+    expect(progress).not.toContain("getBoundingClientRect");
+    expect(source).toContain("measureHost()");
+  });
+});
+
+describe("text sizing", () => {
+  it("sets the standard property as well as the WebKit prefix", () => {
+    const css = readFileSync("app/globals.css", "utf8");
+    expect(css).toMatch(/-webkit-text-size-adjust:\s*100%/);
+    expect(css).toMatch(/(^|[^-\w])text-size-adjust:\s*100%/);
   });
 });

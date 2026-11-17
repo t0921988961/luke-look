@@ -26,6 +26,10 @@ export default defineConfig({
       name: "webkit-mobile",
       use: { ...devices["iPhone 13"], viewport: { width: 375, height: 812 } },
     },
+    {
+      name: "firefox-desktop",
+      use: { ...devices["Desktop Firefox"], viewport: { width: 1440, height: 900 } },
+    },
   ],
   webServer: {
     // Tests run against the production build: `npm run build` first.

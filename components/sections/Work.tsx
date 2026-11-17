@@ -1,12 +1,50 @@
+import { Fragment, type ReactNode } from "react";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dict } from "@/lib/i18n/types";
 import { FEATURED_TECH, WORK_TECH } from "@/lib/site";
 import { DashboardMock } from "@/components/islands/DashboardMock";
 import { IslandBoundary } from "@/components/islands/IslandBoundary";
 import { CheckIcon, LockIcon, ProjectArt } from "@/components/ui/Icons";
+import { HanRun } from "@/components/ui/HanRun";
 import { SectionHead } from "@/components/ui/SectionHead";
 
 const CARD_SPANS = ["xl:col-span-2", "xl:col-span-2", "xl:col-span-2", "xl:col-span-3", "md:col-span-2 xl:col-span-3"];
+
+/** U+200B in a dictionary string is an explicit wrap point. It becomes <wbr> so it is not copied or read. */
+function withBreaks(text: string): ReactNode {
+  const parts = text.split("\u200b");
+  if (parts.length === 1) return text;
+  return parts.map((part, i) => (
+    <Fragment key={i}>
+      {i > 0 ? <wbr /> : null}
+      {part}
+    </Fragment>
+  ));
+}
+
+function ProjectNotes({ label, notes }: { label: string; notes: string[] }) {
+  return (
+    <details className="work-more mt-5 border-t border-line pt-3">
+      <summary role="button" className="cursor-pointer">
+        <span className="flex min-h-11 items-center justify-between gap-3 text-sm font-semibold text-ink">
+          {label}
+          <span aria-hidden="true" className="work-more-icon relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-line-strong text-primary">
+            <span className="absolute h-[1.5px] w-3 bg-current" />
+            <span className="absolute h-3 w-[1.5px] bg-current" />
+          </span>
+        </span>
+      </summary>
+      <ul className="grid gap-2 pt-3 pb-1">
+        {notes.map((note) => (
+          <li key={note} className="pretty relative pl-4 text-sm leading-relaxed text-ink-2">
+            <span aria-hidden="true" className="absolute top-[0.65em] left-0 h-1.5 w-1.5 rounded-full bg-sky" />
+            {note}
+          </li>
+        ))}
+      </ul>
+    </details>
+  );
+}
 
 export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
   return (
@@ -23,7 +61,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
             aria-hidden="true"
             className="pointer-events-none absolute -top-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-primary/10 blur-3xl"
           />
-          <div className="relative flex flex-col lg:col-span-5">
+          <div className="relative flex min-w-0 flex-col lg:col-span-5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="rounded-full bg-primary px-3 py-1 font-mono text-[11px] tracking-wider text-primary-ink uppercase">
                 {t.featuredTag}
@@ -33,9 +71,11 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
               </span>
             </div>
             <h3 id="work-featured-title" className="display mt-6 text-[clamp(1.9rem,3.6vw,3.25rem)] [word-break:keep-all] text-ink">
-              {t.featured.title}
+              {withBreaks(t.featured.title)}
             </h3>
-            <p className="mt-2 text-sm font-medium text-primary">{t.featured.org}</p>
+            <p className="mt-2 text-sm font-medium text-primary">
+              <HanRun text={t.featured.org} locale={locale} />
+            </p>
             <p className="pretty mt-5 text-base leading-relaxed text-ink-2">{t.featured.desc}</p>
             <ul className="mt-6 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               {t.featured.facts.map((f) => (
@@ -56,6 +96,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
                 </li>
               ))}
             </ul>
+            <ProjectNotes label={t.detail} notes={t.featured.more} />
           </div>
           <div className="relative lg:col-span-7 lg:self-center">
             <IslandBoundary>
@@ -91,7 +132,9 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
                   <ProjectArt kind={i} />
                 </div>
                 <h3 className="mt-5 text-xl leading-snug font-bold tracking-tight text-ink md:text-[1.4rem]">{item.title}</h3>
-                <p className="mt-1 text-sm font-medium text-primary">{item.org}</p>
+                <p className="mt-1 text-sm font-medium text-primary">
+                  <HanRun text={item.org} locale={locale} />
+                </p>
                 <p className="pretty mt-3 text-[15px] leading-relaxed text-ink-2">{item.desc}</p>
                 <ul className="mt-auto flex flex-wrap gap-1.5 pt-6">
                   {WORK_TECH[i].map((tech) => (
@@ -100,6 +143,7 @@ export function Work({ t, locale }: { t: Dict["work"]; locale: Locale }) {
                     </li>
                   ))}
                 </ul>
+                <ProjectNotes label={t.detail} notes={item.more} />
               </article>
             </li>
           ))}

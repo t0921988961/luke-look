@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
-import { EmailReveal } from "@/components/islands/EmailReveal";
+import { describe, expect, it } from "vitest";
+import { startExperience } from "@/components/islands/deferred";
 import { ExperienceList } from "@/components/islands/ExperienceList";
 import { LanguageSwitch } from "@/components/islands/LanguageSwitch";
 import { SiteHeader } from "@/components/islands/SiteHeader";
@@ -10,7 +10,6 @@ import { getDictionary, getLanguageLabels } from "@/lib/i18n/get-dictionary";
 import { THEME_KEY } from "@/lib/theme";
 
 const zh = getDictionary("zh-TW");
-const ADDRESS = ["t0921988961", "+portfolio", "@", "gmail.com"].join("");
 
 describe("ThemeSwitch", () => {
   it("is a radiogroup with one tabbable, checked option", () => {
@@ -65,55 +64,14 @@ describe("LanguageSwitch", () => {
   });
 });
 
-describe("EmailReveal", () => {
-  it("renders no address and no mailto until asked", () => {
-    const { container } = render(<EmailReveal labels={zh.contact} />);
-    expect(container.innerHTML).not.toContain("gmail");
-    expect(container.innerHTML).not.toContain("mailto:");
-    expect(screen.getByRole("button", { name: "顯示 Email" })).toHaveAttribute("aria-expanded", "false");
-  });
-
-  it("reveals the +portfolio address, focuses Copy, and copies it", async () => {
-    const user = userEvent.setup();
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
-    render(<EmailReveal labels={zh.contact} />);
-
-    await user.click(screen.getByRole("button", { name: "顯示 Email" }));
-    expect(screen.getByText(ADDRESS)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /寄信/ })).toHaveAttribute("href", `mailto:${ADDRESS}`);
-    const copy = screen.getByRole("button", { name: "複製" });
-    expect(copy).toHaveFocus();
-    expect(screen.getByRole("button", { name: "隱藏 Email" })).toHaveAttribute("aria-expanded", "true");
-
-    await user.click(copy);
-    expect(writeText).toHaveBeenCalledWith(ADDRESS);
-    expect(await screen.findByRole("button", { name: "已複製" })).toBeInTheDocument();
-
-    await user.click(screen.getByRole("button", { name: "隱藏 Email" }));
-    expect(screen.queryByText(ADDRESS)).not.toBeInTheDocument();
-  });
-
-  it("selects the address when the clipboard is unavailable", async () => {
-    const user = userEvent.setup();
-    Object.defineProperty(navigator, "clipboard", {
-      value: { writeText: vi.fn().mockRejectedValue(new Error("denied")) },
-      configurable: true,
-    });
-    render(<EmailReveal labels={zh.contact} />);
-    await user.click(screen.getByRole("button", { name: "顯示 Email" }));
-    await user.click(screen.getByRole("button", { name: "複製" }));
-    expect(window.getSelection()?.toString()).toBe(ADDRESS);
-  });
-});
-
 describe("ExperienceList", () => {
   const items = zh.experience.items.slice(0, 2).map((item, i) => ({ ...item, period: `p${i}`, tech: ["Vue 3"] }));
   const labels = { more: zh.experience.more, less: zh.experience.less, tech: zh.experience.tech };
 
   it("opens the first role and toggles one panel at a time", async () => {
     const user = userEvent.setup();
-    render(<ExperienceList items={items} labels={labels} />);
+    render(<ExperienceList items={items} labels={labels} locale="zh-TW" />);
+    startExperience();
     const [first, second] = screen.getAllByRole("button");
     expect(first).toHaveAttribute("aria-expanded", "false");
     expect(screen.getByText(items[0].summary)).toBeInTheDocument();
@@ -160,6 +118,12 @@ describe("SiteHeader mobile menu", () => {
     expect(document.getElementById("main")!.inert).toBe(false);
     expect(document.documentElement.style.overflow).toBe("");
     expect(toggle).toHaveFocus();
+  });
+
+  it("does not animate the header border until the first scroll position is applied", () => {
+    renderPage();
+    const bar = document.querySelector("header .rounded-full");
+    expect(bar?.className ?? "").not.toContain("transition-[background-color,border-color,box-shadow]");
   });
 
   it("closes when a section link is chosen", async () => {

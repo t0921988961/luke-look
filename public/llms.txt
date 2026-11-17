@@ -1,0 +1,36 @@
+# 鄭宏璋（Luke Cheng）
+
+> 台北的前端工程師。7 年經驗，主要做 B2B、IoT 類的管理後台與數據儀表板。本頁只列履歷上的事實。沒有 Email。
+
+## 現在
+
+- 神達電腦（MiTAC）前端工程師，2023/05 至今
+- VisionMax 訂閱制車隊管理平台的主要前端。任職期間平台訂閱數從約 500 成長到 1 萬以上（產品規模，不是個人成績）
+- 約 20 個模組。主導兩套前端專案升級到 Vue 3
+- vue-i18n，9 種語系，含希伯來文 RTL
+- 功能包含即時影像、地圖事件點位、ECharts。這些是功能，不是專長標題
+
+## 經歷
+
+- 坤侑科技（2022/03–2023/05）：鑑識系統、腳鐐監控系統。Angular 11、RESTful API、SignalR
+- 新金寶集團／金寶電子（2019/07–2022/03）：智慧工廠戰情室，XYZprinting 官網從 Play Framework 遷到 Angular 9
+- 巧禾數位（2018/08–2019/07）：Vue.js / Nuxt.js 金融業活動網站
+- 佳因企業（2015/10–2018/04）：網頁設計師。公司網站行動版、Google Analytics、Tag Manager、Hotjar
+
+## 技術
+
+Vue 3、Pinia、Angular、TypeScript、RxJS、vue-i18n、Vitest、ECharts、Tailwind CSS、Vite
+
+## 語言
+
+- 中文：母語
+- 英文：可閱讀英文技術文件與 API 文件
+
+## 連結
+
+- 網站：https://luke-look.vercel.app/
+- English：https://luke-look.vercel.app/en
+- LinkedIn：https://www.linkedin.com/in/hung-chang-cheng-3a376ab6/
+- CakeResume：https://www.cake.me/s--W8ucQu2nIh5Wzl6VurfmXw--/t0921988961
+
+日文與韓文頁面尚未母語校對，搜尋引擎請不要索引 /ja 與 /ko。

@@ -47,6 +47,17 @@ test.describe("seo", () => {
     expect(robots).toMatch(/User-Agent: \*\s+Disallow: \//);
   });
 
+  test("structured data names the person, site and profile, and llms.txt stays factual", async ({ page, request }) => {
+    await page.goto("/en");
+    const raw = await page.locator('script[type="application/ld+json"]').textContent();
+    const data = JSON.parse(raw ?? "{}") as { "@graph"?: { "@type": string }[] };
+    expect(data["@graph"]?.map((node) => node["@type"])).toEqual(["Person", "WebSite", "ProfilePage"]);
+    expect(raw).not.toMatch(/gmail|mailto:|alumniOf|Hwa Hsia/i);
+    const llms = await (await request.get("/llms.txt")).text();
+    expect(llms).toMatch(/Luke Cheng|鄭宏璋/);
+    expect(llms).not.toMatch(/gmail|mailto:/i);
+  });
+
   test("security headers are sent", async ({ request }) => {
     const res = await request.get("/");
     const h = res.headers();

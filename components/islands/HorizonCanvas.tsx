@@ -60,10 +60,18 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
     const start = performance.now();
     // The hero horizon rises as its section scrolls away.
     const scrollHost = variant === "hero" ? canvas.closest<HTMLElement>("[data-hero]") : null;
+    // Document position is stable while scrolling. Reading it every frame forces layout.
+    let hostTop = 0;
+    let hostHeight = 1;
+    const measureHost = () => {
+      if (!scrollHost) return;
+      const rect = scrollHost.getBoundingClientRect();
+      hostTop = rect.top + window.scrollY;
+      hostHeight = Math.max(1, rect.height);
+    };
     const scrollProgress = () => {
       if (!scrollHost) return 0;
-      const rect = scrollHost.getBoundingClientRect();
-      return Math.min(1, Math.max(0, -rect.top / Math.max(1, rect.height)));
+      return Math.min(1, Math.max(0, (window.scrollY - hostTop) / hostHeight));
     };
 
     const pointer = { x: -9999, y: -9999, tx: -9999, ty: -9999, strength: 0, target: 0 };
@@ -95,10 +103,13 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
       const rect = canvas.getBoundingClientRect();
       width = Math.max(1, rect.width);
       height = Math.max(1, rect.height);
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+      const modest = window.matchMedia("(pointer: coarse)").matches || /\bFirefox\//.test(navigator.userAgent) || saveData;
+      dpr = Math.min(window.devicePixelRatio || 1, modest ? 1.5 : 2);
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      measureHost();
       if (!running) draw(reducedMotion ? 4 : performance.now() - start);
     };
 
@@ -119,8 +130,9 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
 
       const isHero = variant === "hero";
       const mobile = width < 640;
-      const rows = mobile ? 34 : 52;
-      const step = mobile ? 9 : 8;
+      // Fewer samples on a phone: the field still reads as a horizon, and each frame does less work.
+      const rows = mobile ? 28 : 46;
+      const step = mobile ? 11 : 8;
       const cols = Math.ceil(width / step) + 2;
 
       const focal = width * (mobile ? 0.9 : 0.55);
@@ -177,8 +189,10 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
           ys[c] = sy;
           // slope facing the light → warm glint
           const slope = Math.cos(wx * 1.3 + t * 0.55 + z * 0.8) * 0.65 + Math.cos(wx * 2.7 - t * 0.7 + z * 1.9) * 0.6;
-          const band = Math.exp(-Math.pow((sxFlat / width - (0.62 + Math.sin(t * 0.15) * 0.18)) * 2.6, 2));
-          glint[c] = Math.max(0, slope - 0.75) * band;
+          const travel = 0.62 + Math.sin(t * 0.15) * 0.18;
+          const band = Math.exp(-Math.pow((sxFlat / width - travel) * 2.6, 2));
+          const second = Math.exp(-Math.pow((sxFlat / width - (0.3 + Math.sin(t * 0.11 + 2) * 0.1)) * 3.4, 2));
+          glint[c] = Math.max(0, slope - 0.75) * Math.max(band, second * 0.55);
         }
 
         const depthAlpha = Math.pow(near, 1.25);
@@ -220,14 +234,24 @@ export function HorizonCanvas({ variant = "hero", className }: Props) {
       }
     }
 
-    const loop = () => {
+    const modestFrame =
+      window.matchMedia("(pointer: coarse)").matches ||
+      /\bFirefox\//.test(navigator.userAgent) ||
+      (/apple/i.test(navigator.vendor) && !/CriOS|FxiOS|Edg\//.test(navigator.userAgent));
+    const frameMs = modestFrame ? 34 : 20;
+    let lastFrame = 0;
+    const loop = (now: number) => {
       if (!running) return;
-      draw(performance.now() - start);
+      if (now - lastFrame >= frameMs) {
+        lastFrame = now;
+        draw(now - start);
+      }
       raf = requestAnimationFrame(loop);
     };
     const play = () => {
       if (running || reducedMotion || !visible || document.hidden) return;
       running = true;
+      lastFrame = 0;
       raf = requestAnimationFrame(loop);
     };
     const pause = () => {
